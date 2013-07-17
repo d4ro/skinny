@@ -35,7 +35,18 @@ return array(
     'router' => array(
         'action_cache' => array(
             // czy cache'owanie akcji ma być włączone, domyślnie tak (1); dla dev lepiej wyłączyć
-            'enabled' => 1
+            'enabled' => 1,
         ),
+        // ścika bazowa www aplikacji
+        'base_path' => '/',
+    ),
+    'components' => array(
+        // bootstrap
+        'view' => function ($app) {
+            return $view;
+        },
+        'other' => function ($app) {
+            return $other;
+        },
     ),
 );
