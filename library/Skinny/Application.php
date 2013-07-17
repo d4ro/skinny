@@ -27,7 +27,7 @@ class Application {
 
     public function run() {
         $router = new Router(
-                        $this->_config->path->action('action', true),
+                        $this->_config->path->action('app/Action', true),
                         $this->_config->path->cache('cache/skinny', true),
                         $this->_config->router());
     }
