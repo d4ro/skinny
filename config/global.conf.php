@@ -6,21 +6,24 @@ return array(
     'path' => array(
         // katalog akcji aplikacji; domyślnie 'app/Action'
         'action' => 'app/Action',
-        // katalog logiki aplikacji; domyślnie 'app/Logic'
-        'logic' => 'app/Logic',
+        // katalog logiki aplikacji; domyślnie 'app/Model'
+        'model' => 'app/Model',
         // katalog widoków aplikacji; domyślnie 'app/View'
         'view' => 'app/View',
         // punkt wejścia z przeglądarki; domyślnie 'public'
         'public' => 'public',
-        // katalog cache silnika; domyślnie 'cache/skinny'
-        'cache' => 'cache/skinny'
+        // katalog cache; domyślnie 'cache'
+        'cache' => 'cache',
+        'library' => 'library',
     ),
     'loader' => array(
         // czy loader ma być aktywny, domyślnie tak (1)
         'enabled' => 1,
         'loaders' => array(
             'standard' => array(
-            // spl 
+                // dodatkowe ścieżki ładowania, każda osobno
+                'path' => array(
+                )
             ),
             'namespace' => array(
                 // ścieżki automatycznego ładowania z użyciem przestrzeni nazw

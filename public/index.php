@@ -1,8 +1,8 @@
 <?php
 
-chdir(dirname(__DIR__) . '/app');
+chdir(dirname(__DIR__));
 
-// Setup autoloading
+// Setup and run application
 require 'library/skinny/Application.php';
 $application = new Skinny\Application();
 $application->run();

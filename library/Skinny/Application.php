@@ -2,8 +2,11 @@
 
 namespace Skinny;
 
-require_once 'library/skinny/Store.php';
-require_once 'library/skinny/Router.php';
+require_once 'Skinny/Store.php';
+require_once 'Skinny/Router.php';
+require_once 'Skinny/Loader/Standard.php';
+require_once 'Skinny/Loader/NSpace.php';
+require_once 'Skinny/Loader/Prefix.php';
 
 /**
  * Description of Application
@@ -14,8 +17,10 @@ class Application {
 
     protected $_config;
     protected $_env;
+    protected $_loaders;
 
     public function __construct($config_path = 'config') {
+        // config
         $env = isset($_SERVER['APPLICATION_ENV']) ? $_SERVER['APPLICATION_ENV'] : 'development';
         $config = new Store(include $config_path . '/global.conf.php');
         if (file_exists($local_config = $config_path . '/' . $env . '.conf.php'))
@@ -23,6 +28,10 @@ class Application {
 
         $this->_env = $env;
         $this->_config = $config;
+        
+        // loader
+        
+        // bootstrap
     }
 
     public function run() {
