@@ -32,6 +32,10 @@ return array(
             'prefix' => array(
                 // ścieżki automatycznego ładowania z użyciem prefiksów
                 'Zend' => 'library/Zend'
+            ),
+            // customowe loadery
+            'app/Model/CustomLoader.php?Model\CustomLoader' => array(
+            //jakiś config
             )
         )
     ),
