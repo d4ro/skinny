@@ -57,7 +57,6 @@ $script_end = (float) $sec + (float) $usec;
 $elapsed_time = round($script_end - $script_start, 8);
 echo '<br>' . $elapsed_time . '<br>';
 
-die('');
 xdebug_stop_trace();
 xdebug_var_dump($c, $aa->toArray());
 die();

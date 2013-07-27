@@ -68,7 +68,7 @@ class Store implements \JsonSerializable {
      * Zawartość store
      * @var array 
      */
-    protected $store_items;
+    protected $items;
 
     // konstruktor
     public function __construct($obj = null) {
@@ -77,25 +77,25 @@ class Store implements \JsonSerializable {
 
     // odczyt nieistniejącej włąściwości
     public function &__get($name) {
-        if (!isset($this->store_items[$name]))
-            $this->store_items[$name] = new self();
-        return $this->store_items[$name];
+        if (!isset($this->items[$name]))
+            $this->items[$name] = new self();
+        return $this->items[$name];
     }
 
     // zapis do nieistniejącej właściwości
     public function __set($name, $value) {
-        $this->store_items[$name] = $value;
+        $this->items[$name] = $value;
     }
 
     // isset lub empty na nieistniejącej właściwości
     public function __isset($name) {
-        return isset($this->store_items[$name]) &&
-                (!($this->store_items[$name] instanceof self) || ($this->store_items[$name] instanceof self) && !$this->store_items[$name]->isEmpty());
+        return isset($this->items[$name]) &&
+                (!($this->items[$name] instanceof self) || ($this->items[$name] instanceof self) && !$this->items[$name]->isEmpty());
     }
 
     // unsetowanie nieistniejącej właściwości
     public function __unset($name) {
-        unset($this->store_items[$name]);
+        unset($this->items[$name]);
     }
 
     public function __toString() {
@@ -107,8 +107,8 @@ class Store implements \JsonSerializable {
     }
 
     public function length() {
-        $items = count($this->store_items);
-        foreach ($this->store_items as $item) {
+        $items = count($this->items);
+        foreach ($this->items as $item) {
             if ($item instanceof self && $item->isEmpty())
                 $items--;
         }
@@ -117,12 +117,12 @@ class Store implements \JsonSerializable {
     }
 
     public function jsonSerialize() {
-        return $this->store_items;
+        return $this->items;
     }
 
     public function toArray() {
         $array = array();
-        foreach ($this->store_items as $key => $value) {
+        foreach ($this->items as $key => $value) {
             if ($value instanceof self) {
                 if (!$value->isEmpty())
                     $array[$key] = $value->toArray();
@@ -134,24 +134,24 @@ class Store implements \JsonSerializable {
     }
 
     public function __clone() {
-        foreach ($this->store_items as $key => $value) {
+        foreach ($this->items as $key => $value) {
             if ($value instanceof self)
                 if (!$value->isEmpty())
-                    $this->store_items[$key] = clone $value;
+                    $this->items[$key] = clone $value;
                 else
-                    unset($this->store_items[$key]);
+                    unset($this->items[$key]);
         }
     }
 
     public function cleanup() {
-        foreach ($this->store_items as $key => $value) {
+        foreach ($this->items as $key => $value) {
             if ($value instanceof self && $value->isEmpty())
-                unset($this->store_items[$key]);
+                unset($this->items[$key]);
         }
     }
 
     public function fromObj($obj) {
-        $this->store_items = array();
+        $this->items = array();
         $this->merge($obj);
     }
 
@@ -161,7 +161,7 @@ class Store implements \JsonSerializable {
         $return_default = isset($arguments[2]) ? $arguments[2] : isset($arguments[0]);
 
         if (isset($this->$name))
-            return $this->store_items[$name];
+            return $this->items[$name];
 
         if ($create) {
             if ($return_default)
@@ -177,20 +177,20 @@ class Store implements \JsonSerializable {
 
     public function merge($obj) {
         if ($obj instanceof self)
-            $obj = $obj->store_items;
+            $obj = $obj->items;
 
         $obj = (array) $obj;
         foreach ($obj as $key => $value) {
             if ($value instanceof self && !$value->isEmpty() || is_array($value)) {
-                if (isset($this->store_items[$key]) && (is_array($this->store_items[$key]) || $this->store_items[$key] instanceof self)) {
-                    if (is_array($this->store_items[$key]))
-                        $this->store_items[$key] = new self($this->store_items[$key]);
-                    $this->store_items[$key]->merge($value);
+                if (isset($this->items[$key]) && (is_array($this->items[$key]) || $this->items[$key] instanceof self)) {
+                    if (is_array($this->items[$key]))
+                        $this->items[$key] = new self($this->items[$key]);
+                    $this->items[$key]->merge($value);
                 }
                 else
-                    $this->store_items[$key] = new self($value);
+                    $this->items[$key] = new self($value);
             } elseif (!is_null($value)) {
-                $this->store_items[$key] = $value;
+                $this->items[$key] = $value;
             }
         }
     }
