@@ -6,3 +6,5 @@ chdir(dirname(__DIR__));
 require 'library/Skinny/Application.php';
 $application = new Skinny\Application();
 $application->run();
+
+die('Executed properly.');

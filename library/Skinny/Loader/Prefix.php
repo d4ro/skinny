@@ -10,5 +10,13 @@ require_once 'Skinny\Loader\Base.php';
  * @author Daro
  */
 class Prefix implements IBase {
-    
+
+    public function load($class_name) {
+        
+    }
+
+    public function register() {
+        
+    }
+
 }

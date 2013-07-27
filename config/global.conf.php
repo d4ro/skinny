@@ -22,7 +22,7 @@ return array(
         // Wyłączenie loadera może się przyczynić do wzrostu wydajności aplikacji,
         // jednak klasy niezaładowane nie będą ładowane automatycznie,
         // co wymaga ich ręcznego załadowania w każdym wykorzystującym je miejscu.
-        'enabled' => 1,
+        //'enabled' => 1,
         'loaders' => array(
             'standard' => array(
                 // dodatkowe ścieżki ładowania, każda osobno
@@ -58,11 +58,14 @@ return array(
     ),
     'components' => array(
         // bootstrap
-        'view' => function ($app) {
-            return $view;
+        'view' => function() {
+            //return $view;
         },
-        'other' => function ($app) {
-            return $other;
+        'other' => function() {
+            //return $other;
         },
+        'test' => function() {
+            xdebug_var_dump($this);
+        }
     ),
 );

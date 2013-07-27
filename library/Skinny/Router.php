@@ -4,6 +4,8 @@ namespace Skinny;
 
 use Skinny\Router\Container;
 
+require_once 'Skinny/Router/IBase.php';
+
 /**
  * Description of Router
  *

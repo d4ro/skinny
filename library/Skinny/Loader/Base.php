@@ -1,11 +1,11 @@
 <?php
 
-require_once 'Skinny\Loader\IBase.php';
-require_once 'Skinny\Store.php';
-
 namespace Skinny\Loader;
 
 use Skinny\Store;
+
+require_once 'Skinny\Loader\IBase.php';
+require_once 'Skinny\Store.php';
 
 /**
  * Description of Base
