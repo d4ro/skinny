@@ -21,7 +21,7 @@ class Application {
 
     public function __construct($config_path = 'config') {
         // config
-        $env = isset($_SERVER['APPLICATION_ENV']) ? $_SERVER['APPLICATION_ENV'] : 'development';
+        $env = isset($_SERVER['APPLICATION_ENV']) ? $_SERVER['APPLICATION_ENV'] : 'production';
         $config = new Store(include $config_path . '/global.conf.php');
         if (file_exists($local_config = $config_path . '/' . $env . '.conf.php'))
             $config->merge(include $local_config);

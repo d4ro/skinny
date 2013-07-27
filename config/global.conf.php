@@ -10,14 +10,18 @@ return array(
         'model' => 'app/Model',
         // katalog widoków aplikacji; domyślnie 'app/View'
         'view' => 'app/View',
+        // katalog bibliotek; domyślnie 'library'
+        'library' => 'library',
         // punkt wejścia z przeglądarki; domyślnie 'public'
         'public' => 'public',
         // katalog cache; domyślnie 'cache'
         'cache' => 'cache',
-        'library' => 'library',
     ),
     'loader' => array(
         // czy loader ma być aktywny, domyślnie tak (1)
+        // Wyłączenie loadera może się przyczynić do wzrostu wydajności aplikacji,
+        // jednak klasy niezaładowane nie będą ładowane automatycznie,
+        // co wymaga ich ręcznego załadowania w każdym wykorzystującym je miejscu.
         'enabled' => 1,
         'loaders' => array(
             'standard' => array(
@@ -35,7 +39,8 @@ return array(
             ),
             // customowe loadery
             'app/Model/CustomLoader.php?Model\CustomLoader' => array(
-            //jakiś config
+                // konfiguracja loadera, jako array do konstruktora
+                'klucz' => 'wartość'
             )
         )
     ),
@@ -46,6 +51,10 @@ return array(
         ),
         // ścika bazowa www aplikacji
         'base_path' => '/',
+    ),
+    'db' => array(
+    ),
+    'view' => array(
     ),
     'components' => array(
         // bootstrap
