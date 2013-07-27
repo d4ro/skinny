@@ -181,33 +181,14 @@ class Store implements \JsonSerializable {
 
         $obj = (array) $obj;
         foreach ($obj as $key => $value) {
-            if ($value instanceof self) {
-                if (!$value->isEmpty()) {
-                    if (isset($this->store_items[$key])) {
-                        if ($this->store_items[$key] instanceof self) {
-                            $this->store_items[$key]->merge($value);
-                        } elseif (is_array($this->store_items[$key])) {
-                            $this->store_items[$key] = new self($this->store_items[$key]);
-                            $this->store_items[$key]->merge($value);
-                        } else {
-                            $this->store_items[$key] = clone $value;
-                        }
-                    } else {
-                        $this->store_items[$key] = clone $value;
-                    }
-                }
-            } elseif (is_array($value)) {
-                if (isset($this->store_items[$key])) {
-                    if ($this->store_items[$key] instanceof self) {
-                        $this->store_items[$key]->merge($value);
-                    } elseif (is_array($this->store_items[$key])) {
+            if ($value instanceof self && !$value->isEmpty() || is_array($value)) {
+                if (isset($this->store_items[$key]) && (is_array($this->store_items[$key]) || $this->store_items[$key] instanceof self)) {
+                    if (is_array($this->store_items[$key]))
                         $this->store_items[$key] = new self($this->store_items[$key]);
-                        $this->store_items[$key]->merge($value);
-                    } else {
-                        $this->store_items[$key] = new self($value);
-                    }
+                    $this->store_items[$key]->merge($value);
                 }
-                $this->store_items[$key] = new self($value);
+                else
+                    $this->store_items[$key] = new self($value);
             } elseif (!is_null($value)) {
                 $this->store_items[$key] = $value;
             }
