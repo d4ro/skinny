@@ -9,14 +9,10 @@ require_once 'Skinny\Loader\Base.php';
  *
  * @author Daro
  */
-class NSpace implements IBase {
+class NSpace extends Base {
 
     public function load($class_name) {
-        
-    }
-
-    public function register() {
-        
+        // TODO   
     }
 
 }

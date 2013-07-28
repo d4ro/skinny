@@ -18,31 +18,26 @@ return array(
         'cache' => 'cache',
     ),
     'loader' => array(
-        // czy loader ma być aktywny, domyślnie tak (1)
-        // Wyłączenie loadera może się przyczynić do wzrostu wydajności aplikacji,
-        // jednak klasy niezaładowane nie będą ładowane automatycznie,
-        // co wymaga ich ręcznego załadowania w każdym wykorzystującym je miejscu.
-        //'enabled' => 1,
-        'loaders' => array(
-            'standard' => array(
-                // dodatkowe ścieżki ładowania, każda osobno
-                'path' => array(
-                )
-            ),
-            'namespace' => array(
-                // ścieżki automatycznego ładowania z użyciem przestrzeni nazw
-                'Skinny' => 'library/Skinny'
-            ),
-            'prefix' => array(
-                // ścieżki automatycznego ładowania z użyciem prefiksów
-                'Zend' => 'library/Zend'
-            ),
-            // customowe loadery
-            'app/Model/CustomLoader.php?Model\CustomLoader' => array(
-                // konfiguracja loadera, jako array do konstruktora
-                'klucz' => 'wartość'
+        'standard' => array(
+            // dodatkowe ścieżki ładowania, każda osobno
+            'path' => array(
             )
-        )
+        ),
+        'namespace' => array(
+            // ścieżki automatycznego ładowania z użyciem przestrzeni nazw
+            'Skinny' => 'library/Skinny'
+        ),
+        'prefix' => array(
+            // ścieżki automatycznego ładowania z użyciem prefiksów
+            'Zend' => 'library/Zend'
+        ),
+        // customowe loadery
+        /*'app/Model/CustomLoader.php?Model\CustomLoader' => array(
+            // konfiguracja loadera, jako array do konstruktora
+            'klucz' => 'wartość'
+        ),
+        'Model\Other\CustomLoader' => array(
+        )*/
     ),
     'router' => array(
         'action_cache' => array(
@@ -60,12 +55,15 @@ return array(
         // bootstrap
         'view' => function() {
             //return $view;
+            return true;
         },
         'other' => function() {
             //return $other;
+            return true;
         },
         'test' => function() {
             xdebug_var_dump($this);
+            return true;
         }
     ),
 );

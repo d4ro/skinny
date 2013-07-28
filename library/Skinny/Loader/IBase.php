@@ -8,6 +8,8 @@ namespace Skinny\Loader;
  * @author Daro
  */
 interface IBase {
+    
+    public function isRegistered();
 
     public function register();
 

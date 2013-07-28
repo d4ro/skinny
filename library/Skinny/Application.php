@@ -2,12 +2,7 @@
 
 namespace Skinny;
 
-/* require_once 'Skinny/Application/Components.php';
-  require_once 'Skinny/Store.php';
-  require_once 'Skinny/Router.php';
-  require_once 'Skinny/Loader/Standard.php';
-  require_once 'Skinny/Loader/NSpace.php';
-  require_once 'Skinny/Loader/Prefix.php'; */
+use Skinny\Application\Components;
 
 /**
  * Description of Application
@@ -19,7 +14,7 @@ class Application {
     protected $_components;
     protected $_config;
     protected $_env;
-    protected $_loaders;
+    protected $_loader;
 
     public function __construct($config_path = 'config') {
         // config
@@ -33,11 +28,22 @@ class Application {
         $this->_config = $config;
 
         // internal include-driven loader
-        set_include_path(get_include_path() . PATH_SEPARATOR . realpath(dirname(__DIR__) . '/' . $this->_config->path->library('library')));
+        set_include_path(get_include_path() . PATH_SEPARATOR . $this->_config->path->library('library', true));
+        require_once 'Skinny/Application/Components.php';
+        require_once 'Skinny/Router.php';
+        require_once 'Skinny/Loader.php';
 
         // loader
+        $this->_loader = new Loader(
+                        $this->_config->path->action('app/Action', true),
+                        $this->_config->path->model('app/Model', true),
+                        $this->_config->path->library('library', true)
+        );
+        $this->_loader->initLoaders($this->_config->loader->toArray());
+        $this->_loader->register();
+
         // bootstrap
-        $this->_components = new Application\Components($this->_config);
+        $this->_components = new Components($this->_config);
         $this->_components->setInitializers($this->_config->components->toArray());
         $this->_components->initialize();
     }
@@ -49,7 +55,7 @@ class Application {
         return $this->_config->$key(null);
     }
 
-    public function Components() {
+    public function getComponents() {
         return $this->_components;
     }
 
@@ -57,7 +63,8 @@ class Application {
         $router = new Router(
                         $this->_config->path->action('app/Action', true),
                         $this->_config->path->cache('cache/skinny', true),
-                        $this->_config->router());
+                        $this->_config->router()
+        );
     }
 
 }

@@ -79,15 +79,15 @@ class Components {
         $names = (array) $name;
         foreach ($names as $component) {
             if ($this->isInitialized($component))
-                throw new \InvalidArgumentException('Component name "' . $name . '" has already been initialized.');
+                throw new \InvalidArgumentException('Component name "' . $component . '" has already been initialized.');
 
             if (!$this->hasInitializer($component))
-                throw new \InvalidArgumentException('Component name "' . $name . '" does not have proper initializer.');
+                throw new \InvalidArgumentException('Component name "' . $component . '" does not have proper initializer.');
 
             $initializer = $this->_initializers[$component];
             $result = $initializer();
             if (is_null($result))
-                throw new \BadFunctionCallException('Component name "' . $name . '" initializer does not return object.');
+                throw new \BadFunctionCallException('Component name "' . $component . '" initializer does not return object.');
 
             $this->_components[$component] = $result;
             unset($this->_initializers[$component]);
