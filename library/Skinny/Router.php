@@ -46,21 +46,39 @@ class Router implements Router\IBase {
     }
 
     public function getRoute($path, Container\IBase $container = null) {
-        if (is_null($container))
-            $container = new Container ();
+        if (null === $container)
+            $container = new Container();
 
         $base_path = $this->getBasePath();
-        if ($base_path && strpos($path, "/$base_path/") === 0) {
-            // jest base_path
+        if ($base_path && strpos($path, "/$base_path") === 0) {
+            $path = substr(path, strlen($base_path) + 1);
+        }
+
+        $path = ltrim($path, '/');
+        $args = explode('/', $path);
+        $container->setArgs($args);
+        
+        $action_length = $this->findAction($args);
+
+        $params_args = array();
+
+
+        $params = array();
+        for ($i = 0; $i < count($args); $i++) {
+            
         }
 
         return $container;
     }
 
     public function getBasePath() {
-        if (is_null($this->_base_path))
+        if (null === $this->_base_path)
             $this->_base_path = trim($this->_config->base_path('/', true), '/');
         return $this->_base_path;
+    }
+
+    public function findAction($args) {
+        
     }
 
 }
