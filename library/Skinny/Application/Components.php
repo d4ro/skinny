@@ -24,7 +24,7 @@ class Components {
     }
 
     public function getConfig($key = null) {
-        if (is_null($key))
+        if (null ===($key))
             return $this->_config;
 
         return $this->_config->$key(null);
@@ -46,7 +46,7 @@ class Components {
     }
 
     public function areInitialized($name = null) {
-        if (is_null($name))
+        if (null ===($name))
             return empty($this->_initializers);
 
         $names = (array) $name;
@@ -73,7 +73,7 @@ class Components {
     }
 
     public function initialize($name = null) {
-        if (is_null($name))
+        if (null ===($name))
             $name = array_keys($this->_initializers);
 
         $names = (array) $name;
@@ -86,7 +86,7 @@ class Components {
 
             $initializer = $this->_initializers[$component];
             $result = $initializer();
-            if (is_null($result))
+            if (null ===($result))
                 throw new \BadFunctionCallException('Component name "' . $component . '" initializer does not return object.');
 
             $this->_components[$component] = $result;

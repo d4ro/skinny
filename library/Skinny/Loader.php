@@ -54,7 +54,7 @@ class Loader {
         }
         $this->_loaders = $loaders;
 
-        if (is_null($name)) {
+        if (null ===($name)) {
             foreach ($this->_loaders as $loader) {
                 if (!$loader->isRegistered())
                     $loader->register();

@@ -189,7 +189,7 @@ class Store implements \JsonSerializable {
                 }
                 else
                     $this->items[$key] = new self($value);
-            } elseif (!is_null($value)) {
+            } elseif (null !== $value) {
                 $this->items[$key] = $value;
             }
         }

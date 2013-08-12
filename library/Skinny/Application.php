@@ -15,6 +15,7 @@ class Application {
     protected $_config;
     protected $_env;
     protected $_loader;
+    protected $_settings;
 
     public function __construct($config_path = 'config') {
         // config
@@ -29,9 +30,12 @@ class Application {
 
         // internal include-driven loader
         set_include_path(get_include_path() . PATH_SEPARATOR . $this->_config->path->library('library', true));
+        require_once 'Skinny/Settings.php';
+        require_once 'Skinny/Loader.php';
         require_once 'Skinny/Application/Components.php';
         require_once 'Skinny/Router.php';
-        require_once 'Skinny/Loader.php';
+        
+        $this->_settings = new Settings($config_path);
 
         // loader
         $this->_loader = new Loader(
@@ -45,24 +49,25 @@ class Application {
         // bootstrap
         $this->_components = new Components($this->_config);
         $this->_components->setInitializers($this->_config->components->toArray());
-        $this->_components->initialize();
+        // TODO
+        //$this->_components->initialize(); tego nie włączamy, bo nie koniecznie chcemy zainicjować wszystkie komponenty na raz - trzeba zrobić mechanizm na żądanie jak w yii
     }
 
     public function getConfig($key = null) {
-        if (is_null($key))
+        if (null ===($key))
             return $this->_config;
 
         return $this->_config->$key(null);
     }
 
-    public function getComponents() {
+    public function components() {
         return $this->_components;
     }
 
     public function run() {
         $router = new Router(
                         $this->_config->path->action('app/Action', true),
-                        $this->_config->path->cache('cache/skinny', true),
+                        $this->_config->path->cache('cache', true),
                         $this->_config->router()
         );
     }

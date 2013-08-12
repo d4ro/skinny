@@ -27,13 +27,13 @@ class Step implements Router\Container\IBase {
     }
 
     public function next(Step $step = null) {
-        if (!is_null($step))
+        if (!null ===($step))
             $this->_next = $step;
         return $this->_next;
     }
 
     public function previous(Step $step = null) {
-        if (!is_null($step))
+        if (!null ===($step))
             $this->_previous = $step;
         return $this->_previous;
     }
@@ -46,7 +46,7 @@ class Step implements Router\Container\IBase {
         
     }
 
-    public function getAllParams() {
+    public function getParams() {
         
     }
 
@@ -54,7 +54,7 @@ class Step implements Router\Container\IBase {
         
     }
 
-    public function getAllArgs() {
+    public function getArgs() {
         
     }
 
@@ -63,6 +63,10 @@ class Step implements Router\Container\IBase {
     }
 
     public function getArgsCount() {
+        
+    }
+
+    public function setArgs($args) {
         
     }
 

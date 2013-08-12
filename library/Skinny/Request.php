@@ -83,7 +83,7 @@ class Request {
     }
 
     public function getRouter() {
-        if (is_null($this->_router))
+        if (null ===($this->_router))
             $this->_router = Router::getInstance();
         return $this->_router;
     }

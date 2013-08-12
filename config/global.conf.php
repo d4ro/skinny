@@ -32,12 +32,12 @@ return array(
             'Zend' => 'library/Zend'
         ),
         // customowe loadery
-        /*'app/Model/CustomLoader.php?Model\CustomLoader' => array(
-            // konfiguracja loadera, jako array do konstruktora
-            'klucz' => 'wartość'
-        ),
-        'Model\Other\CustomLoader' => array(
-        )*/
+        /* 'app/Model/CustomLoader.php?Model\CustomLoader' => array(
+          // konfiguracja loadera, jako array do konstruktora
+          'klucz' => 'wartość'
+          ),
+          'Model\Other\CustomLoader' => array(
+          ) */
     ),
     'router' => array(
         'action_cache' => array(
@@ -55,11 +55,11 @@ return array(
         // bootstrap
         'view' => function() {
             //return $view;
-            return true;
+            return $this;
         },
         'other' => function() {
             //return $other;
-            return true;
+            return $this;
         },
         'test' => function() {
             xdebug_var_dump($this);

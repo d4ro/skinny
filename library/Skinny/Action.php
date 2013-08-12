@@ -38,16 +38,16 @@ abstract class Action {
         return $this->getRequest()->current()->getArg($index, $default);
     }
 
-    public function getAllArgs() {
-        return $this->getRequest()->current()->getAllArgs();
+    public function getArgs() {
+        return $this->getRequest()->current()->getArgs();
     }
 
     public function getParam($name, $default = null) {
         return $this->getRequest()->current()->getParam($name, $default);
     }
 
-    public function getAllParams() {
-        return $this->getRequest()->current()->getAllParams();
+    public function getParams() {
+        return $this->getRequest()->current()->getParams();
     }
 
     public function getAction() {
