@@ -3,12 +3,12 @@
 namespace Skinny\Loader;
 
 /**
- * Description of IBase
+ * Description of LoaderInterface
  *
  * @author Daro
  */
-interface IBase {
-    
+interface LoaderInterface {
+
     public function isRegistered();
 
     public function register();

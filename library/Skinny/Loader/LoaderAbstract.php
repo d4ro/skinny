@@ -4,7 +4,7 @@ namespace Skinny\Loader;
 
 use Skinny\Store;
 
-require_once 'Skinny\Loader\IBase.php';
+require_once 'Skinny\Loader\LoaderInterface.php';
 require_once 'Skinny\Store.php';
 
 /**
@@ -12,7 +12,7 @@ require_once 'Skinny\Store.php';
  *
  * @author Daro
  */
-abstract class Base implements IBase {
+abstract class LoaderAbstract implements LoaderInterface {
 
     protected $_config;
     protected $_registered;
@@ -27,7 +27,7 @@ abstract class Base implements IBase {
         $this->_model_path = $model_path;
         $this->_library_path = $library_path;
     }
-    
+
     public function isRegistered() {
         return $this->_registered;
     }

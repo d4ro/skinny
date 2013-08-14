@@ -6,7 +6,7 @@ namespace Skinny\Router;
  *
  * @author Daro
  */
-interface IBase {
+interface RouterAbstract {
 
     function getRoute($path, Container\IBase $container = null);
 }

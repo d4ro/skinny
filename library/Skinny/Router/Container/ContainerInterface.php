@@ -1,10 +1,12 @@
 <?php
 
 namespace Skinny\Router\Container;
+
 /**
  *
  * @author Daro
  */
-interface IBase {
+interface ContainerInterface {
+
     public function setArgs($args);
 }
