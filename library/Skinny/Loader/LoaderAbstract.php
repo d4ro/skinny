@@ -8,7 +8,7 @@ require_once 'Skinny\Loader\LoaderInterface.php';
 require_once 'Skinny\Store.php';
 
 /**
- * Description of Base
+ * Description of LoaderAbstract
  *
  * @author Daro
  */

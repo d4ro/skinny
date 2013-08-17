@@ -22,7 +22,7 @@ class Loader {
         $this->_library_path = $library_path;
     }
 
-    public function putLoader(Loader\IBase $loader, $name, $priority = 5) {
+    public function putLoader(Loader\LoaderInterface $loader, $name, $priority = 5) {
         if (is_array($loader)) {
             foreach ($loader as $key => $instance)
                 $this->putLoader($instance, $name . $key, $priority);
@@ -54,7 +54,7 @@ class Loader {
         }
         $this->_loaders = $loaders;
 
-        if (null ===($name)) {
+        if (null === ($name)) {
             foreach ($this->_loaders as $loader) {
                 if (!$loader->isRegistered())
                     $loader->register();

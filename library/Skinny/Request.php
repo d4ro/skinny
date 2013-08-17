@@ -76,14 +76,14 @@ class Request {
         $this->_step(new Step($path, $params));
     }
 
-    public function setRouter(Router\IBase $router) {
-        if (!$router instanceof Router\IBase)
+    public function setRouter(Router\RouterInterface $router) {
+        if (!$router instanceof Router\RouterInterface)
             throw new \InvalidArgumentException;
         $this->_router = $router;
     }
 
     public function getRouter() {
-        if (null ===($this->_router))
+        if (null === ($this->_router))
             $this->_router = Router::getInstance();
         return $this->_router;
     }

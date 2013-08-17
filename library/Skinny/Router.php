@@ -4,14 +4,14 @@ namespace Skinny;
 
 use Skinny\Router\Container;
 
-require_once 'Skinny/Router/IBase.php';
+require_once 'Skinny/Router/RouterInterface.php';
 
 /**
  * Description of Router
  *
  * @author Daro
  */
-class Router implements Router\IBase {
+class Router implements Router\RouterInterface {
 
     protected $_action_path;
     protected $_cache_path;
@@ -45,7 +45,7 @@ class Router implements Router\IBase {
         static::$_instance = $this;
     }
 
-    public function getRoute($path, Container\IBase $container = null) {
+    public function getRoute($path, Container\ContainerInterface $container = null) {
         if (null === $container)
             $container = new Container();
 
@@ -57,7 +57,7 @@ class Router implements Router\IBase {
         $path = ltrim($path, '/');
         $args = explode('/', $path);
         $container->setArgs($args);
-        
+
         $action_length = $this->findAction($args);
 
         $params_args = array();

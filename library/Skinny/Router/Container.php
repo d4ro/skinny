@@ -7,6 +7,6 @@ namespace Skinny\Router;
  *
  * @author Daro
  */
-class Container implements Container\IBase {
+class Container implements Container\ContainerInterface {
     
 }

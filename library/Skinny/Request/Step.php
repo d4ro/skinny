@@ -14,7 +14,7 @@ use Skinny\Router;
  *
  * @author Daro
  */
-class Step implements Router\Container\IBase {
+class Step implements Router\Container\ContainerInterface {
 
     protected $_path;
     protected $_params;
@@ -27,18 +27,18 @@ class Step implements Router\Container\IBase {
     }
 
     public function next(Step $step = null) {
-        if (!null ===($step))
+        if (!null === ($step))
             $this->_next = $step;
         return $this->_next;
     }
 
     public function previous(Step $step = null) {
-        if (!null ===($step))
+        if (!null === ($step))
             $this->_previous = $step;
         return $this->_previous;
     }
 
-    public function resolve(Router\IBase $router) {
+    public function resolve(Router\RouterAbstract $router) {
         $router->getRoute($path, $this);
     }
 
