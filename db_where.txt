@@ -1,0 +1,46 @@
+6 + 7
+
++ 6 7
+
+
+6 + 7 * 8
+
+* + 6 7 8
+
+( a & b | c & d ) & e
+
+x = a & b
+y = c & d
+
+( x | y ) & e
+
+z = x | y
+
+z & e
+
+& z e
+
+andWhere( z, e )
+
+& ( | x y ) e
+
+andWhere( orWhere ( x , y) , e )
+
+& ( | ( & a b ) ( & c d ) ) e
+
+andWhere( orWhere ( andWhere ( a , b ) , andWhere ( c , d ) ) , e )
+
+where ( " ( :a & :b | :c & :d ) & :e ) " );
+
+
+where ( "user_id in :user_id" )
+
+->execute('user_id' => $this->_db, 'id' => $id)
+
+$sql->where( $sql->andWhere( $sql->orWhere( $sql->andWhere( a , b ) , $sql->andWhere( c , d ) ) , e ) );
+
+a = "user_id = 55"
+a = array("user_id = ?" => 55, 'ciapek in (?)' => $supa)
+a = "user_id = :user_id"
+
+$sql->where( array( 'and' => array( 'or' => array( 'and_0' => array( a , b ) , 'and_1' => array ( c , d ) ) , e ) ) );
