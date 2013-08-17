@@ -2,14 +2,14 @@
 
 namespace Skinny\Loader;
 
-require_once 'Skinny\Loader\Base.php';
+require_once 'Skinny\Loader\LoaderAbstract.php';
 
 /**
  * Description of NSpace
  *
  * @author Daro
  */
-class NSpace extends Base {
+class NSpace extends LoaderAbstract {
 
     public function load($class_name) {
         // TODO   

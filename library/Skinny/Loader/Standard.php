@@ -2,14 +2,14 @@
 
 namespace Skinny\Loader;
 
-require_once 'Skinny\Loader\Base.php';
+require_once 'Skinny\Loader\LoaderAbstract.php';
 
 /**
  * Description of Standard
  *
  * @author Daro
  */
-class Standard extends Base {
+class Standard extends LoaderAbstract {
 
     public function register() {
         // ustaw ścieżki include
