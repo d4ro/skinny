@@ -14,60 +14,71 @@ use Skinny\Router;
  *
  * @author Daro
  */
-class Step implements Router\Container\ContainerInterface {
+class Step extends Router\Container\ContainerAbstract {
 
+    /**
+     *
+     * @var string
+     */
     protected $_path;
-    protected $_params;
+
+    /**
+     *
+     * @var Step
+     */
     protected $_next;
+
+    /**
+     *
+     * @var Step
+     */
     protected $_previous;
 
     public function __construct($path, $params = array()) {
         $this->_path = $path;
         $this->_params = $params;
+        $this->_actionMatch = true;
     }
 
     public function next(Step $step = null) {
-        if (!null === ($step))
+        if (null !== $step)
             $this->_next = $step;
         return $this->_next;
     }
 
     public function previous(Step $step = null) {
-        if (!null === ($step))
+        if (null !== $step)
             $this->_previous = $step;
         return $this->_previous;
     }
 
-    public function resolve(Router\RouterAbstract $router) {
-        $router->getRoute($path, $this);
+    public function first() {
+        $first = $this;
+        while ($previous = $first->previous())
+            $first = $previous;
+        return $first;
     }
 
-    public function getAction() {
-        
+    public function resolve(Router\RouterInterface $router) {
+        $router->getRoute($this->_path, $this);
+        if (null !== $this->_previous && $this->_action !== $this->_previous->_action)
+            $this->_actionMatch = false;
     }
 
-    public function getParams() {
-        
+    public function getParam($name, $default = null) {
+        if (isset($this->_params[$name]))
+            return $this->_params[$name];
+        return $default;
     }
 
-    public function getParam($name, $default) {
-        
-    }
-
-    public function getArgs() {
-        
-    }
-
-    public function getArg($index, $default) {
-        
+    public function getArg($index, $default = null) {
+        if (isset($this->_args[$index]))
+            return $this->_args[$index];
+        return $default;
     }
 
     public function getArgsCount() {
-        
-    }
-
-    public function setArgs($args) {
-        
+        return $this->_argsCount;
     }
 
 }

@@ -4,7 +4,7 @@ namespace Skinny;
 
 use Skinny\Router\Container;
 
-require_once 'Skinny/Router/RouterInterface.php';
+//require_once 'Skinny/Router/RouterInterface.php';
 
 /**
  * Description of Router
@@ -46,27 +46,34 @@ class Router implements Router\RouterInterface {
     }
 
     public function getRoute($path, Container\ContainerInterface $container = null) {
+        // jeżeli nie ma gdzie składować wyników, tworzymy nowy kontener
         if (null === $container)
             $container = new Container();
 
+        // pobieramy ścieżkę bazową aplikacji
         $base_path = $this->getBasePath();
         if ($base_path && strpos($path, "/$base_path") === 0) {
-            $path = substr(path, strlen($base_path) + 1);
+            $path = substr($path, strlen($base_path) + 1);
         }
 
+        // ustawiamy argumenty wywołania
         $path = ltrim($path, '/');
         $args = explode('/', $path);
         $container->setArgs($args);
 
+        // określamy akcję
         $action_length = $this->findAction($args);
+        $action_parts = array_slice($args, 0, $action_length);
+        $container->setAction($action_parts);
 
-        $params_args = array();
-
-
+        // określamy parametry
         $params = array();
-        for ($i = 0; $i < count($args); $i++) {
-            
+        var_dump($action_length, $args);
+        for ($i = $action_length; $i < count($args); $i += 2) {
+            if (isset($args[$i + 1]))
+                $params[$args[$i]] = $args[$i + 1];
         }
+        $container->setParams($params);
 
         return $container;
     }
@@ -78,7 +85,7 @@ class Router implements Router\RouterInterface {
     }
 
     public function findAction($args) {
-        
+        // TODO
     }
 
 }

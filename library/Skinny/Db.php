@@ -37,7 +37,7 @@ class Db extends \PDO {
     }
 
     /**
-     * Wstawia rekordy $data do tabeli $table
+     * Propozycja: Wstawia rekordy $data do tabeli $table
      * @param string $table nazwa tabeli
      * @param mixed $data dane rekordów w postaci:
      * - stringu z wartościami - wartości wszystkich kolumn po przecinku lub 'SET ...',
@@ -46,6 +46,7 @@ class Db extends \PDO {
      * dozwolona jest dwuwymiarowa tablica rekordów w celu dodania większej ilości danych na raz
      * @param mixed $columns jawnie określone kolumny, których wartości zostaną wstawione;
      * działa jedynie, gdy $data jest zbiorem wartości wylistowanych po przecinku, indeksowanym arrayem lub zapytaniem SELECT
+     * @return \Skinny\Db\Statement odpowiedź SQL
      */
     public function insert($table, $data, $columns = null) {
         
