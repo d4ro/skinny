@@ -20,11 +20,15 @@ class Table {
     }
 
     public function sql($method = null) {
-        return new Sql($this->_db, $method, $this->_table);
+        return $this->_db->sql($method, $this->_table);
     }
 
-    public function select($columns) {
-        $sql = $this->_db->sql('select', $this->_table);
-        $sql->setColumns($columns);
+    public function select($columns = null) {
+        return $this->sql()->select($columns);
     }
+
+    public function truncate() {
+        // czyści tabelę
+    }
+
 }

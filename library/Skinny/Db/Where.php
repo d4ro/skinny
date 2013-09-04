@@ -7,7 +7,9 @@ namespace Skinny\Db;
  *
  * @author Daro
  */
-class Where {
+class Where implements BindableInterface {
+
+    use Quoting;
 
     const T_OR = 0;
     const T_AND = 1;
@@ -30,8 +32,8 @@ class Where {
     public function add($segment) {
         $segment = func_get_args();
     }
-    
-    public function bind($params) {
+
+    public function bind($param) {
         // TODO: binduje parametry w segmentach i wewnątrz nich (rekurencja)
     }
 
