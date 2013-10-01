@@ -3,11 +3,11 @@
 namespace Skinny\Router\Container;
 
 /**
- * Description of ContainerAbstract
+ * Description of ContainerBase
  *
  * @author Daro
  */
-class ContainerAbstract implements ContainerInterface {
+class ContainerBase implements ContainerInterface {
 
     protected $_action;
     protected $_actionParts;

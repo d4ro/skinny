@@ -14,7 +14,7 @@ use Skinny\Router;
  *
  * @author Daro
  */
-class Step extends Router\Container\ContainerAbstract {
+class Step extends Router\Container\ContainerBase {
 
     /**
      *
@@ -61,6 +61,7 @@ class Step extends Router\Container\ContainerAbstract {
 
     public function resolve(Router\RouterInterface $router) {
         $router->getRoute($this->_path, $this);
+        // TODO: to jest chyba źle - sprawdzenie chyba powinno być z pierwszym a nie z poprzednim:
         if (null !== $this->_previous && $this->_action !== $this->_previous->_action)
             $this->_actionMatch = false;
     }

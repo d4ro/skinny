@@ -181,7 +181,7 @@ class Store implements \JsonSerializable {
 
         $obj = (array) $obj;
         foreach ($obj as $key => $value) {
-            if ($value instanceof self && !$value->isEmpty() || is_array($value)) {
+            if ($value instanceof self || is_array($value)) {
                 if (isset($this->items[$key]) && (is_array($this->items[$key]) || $this->items[$key] instanceof self)) {
                     if (is_array($this->items[$key]))
                         $this->items[$key] = new self($this->items[$key]);

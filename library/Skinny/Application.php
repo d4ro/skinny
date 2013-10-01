@@ -29,18 +29,18 @@ class Application {
         $this->_config = $config;
 
         // internal include-driven loader
-        set_include_path(get_include_path() . PATH_SEPARATOR . $this->_config->path->library('library', true));
+        set_include_path(get_include_path() . PATH_SEPARATOR . $this->_config->path->library('library', true) . PATH_SEPARATOR . dirname(__DIR__));
         require_once 'Skinny/Settings.php';
         require_once 'Skinny/Loader.php';
         require_once 'Skinny/Application/Components.php';
         require_once 'Skinny/Router.php';
-        
+
         $this->_settings = new Settings($config_path);
 
         // loader
         $this->_loader = new Loader(
                         $this->_config->path->action('app/Action', true),
-                        $this->_config->path->model('app/Model', true),
+                        $this->_config->path->logic('app/Logic', true),
                         $this->_config->path->library('library', true)
         );
         $this->_loader->initLoaders($this->_config->loader->toArray());
@@ -49,18 +49,18 @@ class Application {
         // bootstrap
         $this->_components = new Components($this->_config);
         $this->_components->setInitializers($this->_config->components->toArray());
-        // TODO
-        //$this->_components->initialize(); tego nie włączamy, bo nie koniecznie chcemy zainicjować wszystkie komponenty na raz - trzeba zrobić mechanizm na żądanie jak w yii
+
+        //
     }
 
     public function getConfig($key = null) {
-        if (null ===($key))
+        if (null === $key)
             return $this->_config;
 
         return $this->_config->$key(null);
     }
 
-    public function components() {
+    public function getComponents() {
         return $this->_components;
     }
 

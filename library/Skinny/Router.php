@@ -62,6 +62,7 @@ class Router implements Router\RouterInterface {
         $container->setArgs($args);
 
         // określamy akcję
+        // TODO: akcja nie odnaleziona i co wtedy?
         $action_length = $this->findAction($args);
         $action_parts = array_slice($args, 0, $action_length);
         $container->setAction($action_parts);
@@ -86,6 +87,7 @@ class Router implements Router\RouterInterface {
 
     public function findAction($args) {
         // TODO
+        // bardzo TODO
     }
 
 }

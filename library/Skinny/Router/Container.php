@@ -7,6 +7,6 @@ namespace Skinny\Router;
  *
  * @author Daro
  */
-class Container extends Container\ContainerAbstract {
+class Container extends Container\ContainerBase {
     
 }

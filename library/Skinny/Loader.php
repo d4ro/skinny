@@ -12,13 +12,13 @@ class Loader {
     protected $_loaders;
     protected $_names;
     protected $_action_path;
-    protected $_model_path;
+    protected $_logic_path;
     protected $_library_path;
 
-    public function __construct($action_path, $model_path, $library_path) {
+    public function __construct($action_path, $logic_path, $library_path) {
         $this->_loaders = array();
         $this->_action_path = $action_path;
-        $this->_model_path = $model_path;
+        $this->_logic_path = $logic_path;
         $this->_library_path = $library_path;
     }
 
@@ -75,10 +75,10 @@ class Loader {
         $loaders = (array) $loaders;
         include_once __DIR__ . '/Loader/Standard.php';
         if (isset($loaders['standard'])) {
-            $class = new Loader\Standard($this->_action_path, $this->_model_path, $this->_library_path, $loaders['standard']);
+            $class = new Loader\Standard($this->_action_path, $this->_logic_path, $this->_library_path, $loaders['standard']);
             unset($loaders['standard']);
         } else {
-            $class = new Loader\Standard($this->_action_path, $this->_model_path, $this->_library_path);
+            $class = new Loader\Standard($this->_action_path, $this->_logic_path, $this->_library_path);
         }
         $this->putLoader($class, 'standard', $priority);
 
@@ -100,7 +100,7 @@ class Loader {
                 require_once $file;
             }
             $class_name = array_shift($parts);
-            $class = new $class_name($this->_action_path, $this->_model_path, $this->_library_path, $config);
+            $class = new $class_name($this->_action_path, $this->_logic_path, $this->_library_path, $config);
             $this->putLoader($class, $name, $priority);
         }
     }

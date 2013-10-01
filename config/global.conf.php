@@ -6,8 +6,8 @@ return array(
     'path' => array(
         // katalog akcji aplikacji; domyślnie 'app/Action'
         'action' => 'app/Action',
-        // katalog logiki aplikacji; domyślnie 'app/Model'
-        'model' => 'app/Model',
+        // katalog logiki aplikacji; domyślnie 'app/Logic'
+        'logic' => 'app/Logic',
         // katalog widoków aplikacji; domyślnie 'app/View'
         'view' => 'app/View',
         // katalog bibliotek; domyślnie 'library'
@@ -32,11 +32,11 @@ return array(
             'Zend' => 'library/Zend'
         ),
         // customowe loadery
-        /* 'app/Model/CustomLoader.php?Model\CustomLoader' => array(
+        /* 'app/Logic/CustomLoader.php?Logic\CustomLoader' => array(
           // konfiguracja loadera, jako array do konstruktora
           'klucz' => 'wartość'
           ),
-          'Model\Other\CustomLoader' => array(
+          'Logic\Other\CustomLoader' => array(
           ) */
     ),
     'router' => array(
