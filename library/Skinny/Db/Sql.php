@@ -35,10 +35,10 @@ class Sql {
      * - RENAME
      * @var string
      */
-    protected $_method;
-    protected $_table;
-    protected $_columns;
-    protected $_data;
+    protected $_method;     // przyjmuje pojedyncza wartosc
+    protected $_table;      // tabela glowna operacyjna - pojedyncza wartosc
+//    protected $_columns;    // przechowuje kolumny do zapytania np. from klucze dla update, insert (wartosci znajduja sie w $_data)
+    protected $_data;       // dejta do ewrytink
     protected $_insertdata;
     protected $_where;
     protected $_having;
@@ -63,14 +63,15 @@ class Sql {
     }
 
     public function setMethod($method) {
+        // TODO: walidacja czy już nie została ustawiona
         switch (strtoupper($method)) {
-            case 'SELECT':
-            case 'INSERT':
-            case 'REPLACE':
-            case 'UPDATE':
-            case 'ORINSERT':
-            case 'DELETE':
-            case 'TRUNCATE':
+            case 'SELECT':      // where nieobowiązkowy
+            case 'INSERT':      // where zbędny/zabroniony
+            case 'REPLACE':     // j.w.
+            case 'UPDATE':      // where obowiązkowy
+            case 'ORINSERT':    // j.w.
+            case 'DELETE':      // j.w.
+            case 'TRUNCATE':    // where zbędny/zabroniony
                 $this->_method = $method;
                 break;
 
@@ -85,7 +86,8 @@ class Sql {
         return $this;
     }
 
-    public function addColumns($columns) {
+    public function addColumns($columns) { 
+        // TODO: będzie to się tyczyło tylko selecta
         // dodaje kolumnę lub kolumny do listy pobieranych z bazy kolumn
         $this->_columns = array_merge((array) $this->_columns, (array) $columns);
         return $this;
@@ -165,6 +167,12 @@ class Sql {
     public function group($groupby) {
         // group może zostać ustawiony tylko raz
         $this->_groupby = $groupby;
+        return $this;
+    }
+    
+    public function table($table) {
+        // ustawia tabelę (np. główna tabela do SELECT FROM)
+        $this->_table = $table;
         return $this;
     }
 
