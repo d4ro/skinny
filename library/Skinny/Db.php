@@ -4,6 +4,7 @@ namespace Skinny;
 
 use Skinny\Db\Table;
 use Skinny\Db\Sql;
+use \PDO;
 
 /**
  * Reprezentacja połącenia z bazą danych.Skinny\Db jest nakładką na PDO umożliwiającą łatwiejszą i czytelniejszą obsługę bazy przez programistę.
