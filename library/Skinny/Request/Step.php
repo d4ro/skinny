@@ -78,8 +78,4 @@ class Step extends Router\Container\ContainerBase {
         return $default;
     }
 
-    public function getArgsCount() {
-        return $this->_argsCount;
-    }
-
 }

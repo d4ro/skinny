@@ -3,21 +3,78 @@
 namespace Skinny\Router\Container;
 
 /**
- * Description of ContainerBase
+ * Klasa bazowa kontenera na wyliczone części składowe zapytania do aplikacji.
  *
  * @author Daro
  */
-class ContainerBase implements ContainerInterface {
+abstract class ContainerBase implements ContainerInterface {
 
+    /**
+     * Ścieżka żądania do akcji
+     * @var string
+     */
     protected $_action;
+
+    /**
+     * Części składowe ścieżki do akcji
+     * @var array
+     */
     protected $_actionParts;
+
+    /**
+     * Głębokość ścieżki do akcji
+     * @var integer
+     */
     protected $_actionDepth;
+
+    /**
+     * Czy akcja docelowa zgadza się z wywoływaną
+     * @var boolean
+     */
     protected $_actionMatch;
+
+    /**
+     * Argumenty zapytania
+     * @var array
+     */
     protected $_args;
+
+    /**
+     * Ilość argumentów zapytania
+     * @var integer
+     */
     protected $_argsCount;
+
+    /**
+     * Parametry zapytania
+     * @var array
+     */
     protected $_params;
+
+    /**
+     * Ilość parametrów zapytania
+     * @var integer
+     */
     protected $_paramsCount;
 
+    /**
+     * Konstruktor inicjujący wartości domyślne.
+     */
+    public function __construct() {
+        $this->_action = '';
+        $this->_actionParts = array();
+        $this->_actionDepth = 0;
+        $this->_actionMatch = false;
+        $this->_args = array();
+        $this->_argsCount = 0;
+        $this->_params = array();
+        $this->_paramsCount = 0;
+    }
+
+    /**
+     * Pobiera ścieżkę akcji
+     * @return string
+     */
     public function getAction() {
         return $this->_action;
     }
@@ -38,8 +95,16 @@ class ContainerBase implements ContainerInterface {
         return $this->_args;
     }
 
+    public function getArgsCount() {
+        return $this->_argsCount;
+    }
+
     public function getParams() {
         return $this->_params;
+    }
+
+    public function getParamsCount() {
+        return $this->_paramsCount;
     }
 
     public function setAction(array $actionParts) {

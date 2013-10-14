@@ -1,6 +1,7 @@
 <?php
 
 namespace Action;
+
 use Skinny\Db;
 
 class Index extends \Skinny\Action {
@@ -20,6 +21,14 @@ class Index extends \Skinny\Action {
 //        
 //        $db->beginTransaction();
 //        $db->
+    }
+
+    public function action() {
+        
+    }
+
+    public function protection() {
+        
     }
 
 }
