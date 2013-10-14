@@ -3,18 +3,12 @@
 namespace Action\Test;
 
 /**
- * Description of Strona
+ * Description of index
  *
  * @author Daro
  */
-class Strona extends \Action\Test {
-
-    public function permission() {
-        
-    }
-
-    public function action() {
-        
-    }
-
+class Index {
+    //put your code here
 }
+
+?>
