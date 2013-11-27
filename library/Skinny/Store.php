@@ -156,12 +156,12 @@ class Store implements \JsonSerializable {
     }
 
     public function __call($name, $arguments) {
+        if (isset($this->$name))
+            return $this->items[$name];
+
         $default = isset($arguments[0]) ? $arguments[0] : null;
         $create = isset($arguments[1]) ? $arguments[1] : false;
         $return_default = isset($arguments[2]) ? $arguments[2] : isset($arguments[0]);
-
-        if (isset($this->$name))
-            return $this->items[$name];
 
         if ($create) {
             if ($return_default)
