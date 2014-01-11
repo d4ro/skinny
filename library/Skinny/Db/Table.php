@@ -9,9 +9,8 @@ use Skinny\Db;
  *
  * @author Daro
  */
-class Table {
+class Table extends DatabaseAware {
 
-    protected $_db;
     protected $_table;
 
     public function __construct(Db $db, $table) {

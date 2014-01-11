@@ -19,7 +19,8 @@ class Statement extends \PDOStatement implements BindableInterface {
         $this->_paramCounter = 0;
     }
 
-    public function bind($param) {
+    public function bind($params, $value = null) {
+        // TODO: poprawić, zuniwersalizować
         $param = (array) $param;
         foreach ($param as $key => $value) {
             if (is_string($key)) {

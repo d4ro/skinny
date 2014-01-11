@@ -9,13 +9,7 @@ use Skinny\Db;
  *
  * @author Daro
  */
-class Sql {
-
-    /**
-     * Obiekt połączenia z bazą danych
-     * @var Db
-     */
-    protected $_db;
+class Sql extends Bindable {
 
     /**
      * Metoda użyta do zapytania SQL
@@ -38,6 +32,7 @@ class Sql {
     protected $_method;     // przyjmuje pojedyncza wartosc
     protected $_table;      // tabela glowna operacyjna - pojedyncza wartosc
 //    protected $_columns;    // przechowuje kolumny do zapytania np. from klucze dla update, insert (wartosci znajduja sie w $_data)
+    // to zostało zmienione! teraz kolumny są kluczami w $_data
     protected $_data;       // dejta do ewrytink
     protected $_insertdata;
     protected $_where;
@@ -50,6 +45,11 @@ class Sql {
         $this->_db = $db;
         $this->setMethod($method);
         $this->_table = $table;
+    }
+    
+    protected function _assemble() {
+        // TODO: skonstruowanie całego zapytania do $_expression bez bindowania parametrów z $_values ale z bindowaniem wszystkich komponentów, które są Bindable
+        return parent::_assemble();
     }
 
     public function __set($name, $value) {
@@ -86,7 +86,7 @@ class Sql {
         return $this;
     }
 
-    public function addColumns($columns) { 
+    public function addColumns($columns) {
         // TODO: będzie to się tyczyło tylko selecta
         // dodaje kolumnę lub kolumny do listy pobieranych z bazy kolumn
         $this->_columns = array_merge((array) $this->_columns, (array) $columns);
@@ -169,7 +169,7 @@ class Sql {
         $this->_groupby = $groupby;
         return $this;
     }
-    
+
     public function table($table) {
         // ustawia tabelę (np. główna tabela do SELECT FROM)
         $this->_table = $table;

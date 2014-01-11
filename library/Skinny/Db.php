@@ -4,7 +4,6 @@ namespace Skinny;
 
 use Skinny\Db\Table;
 use Skinny\Db\Sql;
-use \PDO;
 
 /**
  * Reprezentacja połącenia z bazą danych.Skinny\Db jest nakładką na PDO umożliwiającą łatwiejszą i czytelniejszą obsługę bazy przez programistę.
@@ -24,8 +23,8 @@ class Db extends \PDO {
      */
     public function __construct($dsn, $user = null, $pass = null, $driver_options = array()) {
         parent::__construct($dsn, $user, $pass, $driver_options);
-        $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('\Skinny\Db\Statement', array($this)));
-        $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('\Skinny\Db\Statement', array($this)));
+        $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
     /**

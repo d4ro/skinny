@@ -8,6 +8,6 @@ namespace Skinny\Db;
  */
 interface BindableInterface {
 
-    public function bind($param);
+    public function bind($params, $value = null);
 }
 

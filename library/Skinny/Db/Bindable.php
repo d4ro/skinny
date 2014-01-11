@@ -8,9 +8,7 @@ namespace Skinny\Db;
  *
  * @author Daro
  */
-class Bindable implements BindableInterface {
-
-    use Quoting;
+class Bindable extends Assemblable implements BindableInterface {
 
     /**
      * Wyrażenie
@@ -22,7 +20,7 @@ class Bindable implements BindableInterface {
      * Wartości parametrów
      * @var array
      */
-    protected $_params;
+    protected $_values;
 
     /**
      * Tworzy nowy obiekt ustalając treść sparametryzowanego wyrażenia.
@@ -37,30 +35,35 @@ class Bindable implements BindableInterface {
             $this->_expression = $expression->__toString();
         elseif (is_array($expression)) {
             if (count($expression) !== 1)
-                throw new InvalidArgumentException('Expression is not a single element array.');
+                throw new \InvalidArgumentException('Invalid expression: expected string or single element array.');
             $key = key($expression);
             if (is_string($key)) {
                 $this->_expression = $key;
-                $this->_params[] = $expression[$key];
-            }else
+                $this->_values[] = $expression[$key];
+            }
+            else
                 $this->_expression = $expression[$key];
         }
     }
 
-    public function bind($param) {
-        $this->_params = array_merge((array) $this->_params, (array) $param);
+    /**
+     * Podstawia wartości pod parametry nazwane lub nienazwane.
+     * @param type $params
+     * @param type $value
+     */
+    public function bind($params, $value = null) {
+        // TODO: przerobić, poprawić i naprawić
+        $this->_values = array_merge((array) $this->_values, (array) $param);
     }
 
-    public function __toString() {
-        $this->_prepare();
-        return $this->_expression;
-    }
-
-    protected function _prepare() {
+    protected function _assemble() {
         // przygotouje expression
         // TODO: podpisuje wszystkie parametry ich wartościami, tak jak to robi Zend
-        // jeżeli jest tylko jeden nienazwany paramert, wszystkie znaki zapytania zmieniamy na jego wartość
+        // jeżeli jest tylko jeden nienazwany paramert, wszystkie znaki zapytania zmieniamy na jego wartość (czy ja wiem...? chyba błąd)
         // usuwa parametry, expression jest już w wersji kompletnej
     }
 
+    public static function randomName() {
+        // TODO: generowanie randomowej nazwy paramu: same litery i cyfry o stałej długości >=8
+    }
 }
