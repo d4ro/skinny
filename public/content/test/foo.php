@@ -1,0 +1,20 @@
+<?php
+
+namespace content\test;
+
+/**
+ * Description of foo
+ *
+ * @author Daro
+ */
+class foo extends content\test {
+
+    public function permission() {
+        
+    }
+
+    public function action() {
+        
+    }
+
+}

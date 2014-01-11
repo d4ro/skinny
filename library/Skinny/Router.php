@@ -13,7 +13,7 @@ use Skinny\Router\Container;
  */
 class Router implements Router\RouterInterface {
 
-    protected $_action_path;
+    protected $_content_path;
     protected $_cache_path;
     protected $_base_path;
 
@@ -37,8 +37,8 @@ class Router implements Router\RouterInterface {
         return static::$_instance;
     }
 
-    public function __construct($action_path, $cache_path, $config = array()) {
-        $this->_action_path = $action_path;
+    public function __construct($content_path, $cache_path, $config = array()) {
+        $this->_content_path = $content_path;
         $this->_cache_path = $cache_path;
         $this->_config = ($config instanceof Store) ? $config : new Store($config);
 
@@ -89,6 +89,7 @@ class Router implements Router\RouterInterface {
         // TODO
         // bardzo TODO
         // bardzo kurwa TODO
+        // teraz to już kurwa trzeba to zrobić bo ja pierdole bez tego nie będzie działać w ogóle podstawka... czy zdajesz sobie z tego kurwa sprawę??? zrób to już i nie marudź!
     }
 
 }

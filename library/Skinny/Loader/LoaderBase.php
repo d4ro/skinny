@@ -16,16 +16,12 @@ abstract class LoaderBase implements LoaderInterface {
 
     protected $_config;
     protected $_registered;
-    protected $_action_path;
-    protected $_logic_path;
-    protected $_library_path;
+    protected $_paths;
 
-    public function __construct($action_path, $logic_path, $library_path, $config = array()) {
+    public function __construct($paths, $config = array()) {
         $this->_config = ($config instanceof Store) ? $config : new Store($config);
         $this->_registered = false;
-        $this->_action_path = $action_path;
-        $this->_logic_path = $logic_path;
-        $this->_library_path = $library_path;
+        $this->_paths = $paths;
     }
 
     public function isRegistered() {
@@ -34,6 +30,7 @@ abstract class LoaderBase implements LoaderInterface {
 
     public function register() {
         spl_autoload_register(array($this, 'load'));
+        $this->_registered = true;
     }
 
     public abstract function load($class_name);

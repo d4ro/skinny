@@ -5,7 +5,8 @@ namespace Skinny;
 use Skinny\Application\Components;
 
 /**
- * Description of Application
+ * Główna klasa przygotowująca aplikację bazującą na podstawce Skinny.
+ * Odpowiada za przygotowanie konfiguracji, ustawienie loaderów, komponentów, ustalenie routingu i wykonanie akcji.
  *
  * @author Daro
  */
@@ -17,6 +18,10 @@ class Application {
     protected $_loader;
     protected $_settings;
 
+    /**
+     * Konstruktor obiektu aplikacji Skinny
+     * @param string $config_path ścieżka do katalogu z konfiguracją względem miejsca, w którym tworzona jest instancja
+     */
     public function __construct($config_path = 'config') {
         // config
         include_once __DIR__ . '/Store.php';
@@ -29,28 +34,23 @@ class Application {
         $this->_config = $config;
 
         // internal include-driven loader
-        set_include_path(get_include_path() . PATH_SEPARATOR . $this->_config->path->library('library', true) . PATH_SEPARATOR . dirname(__DIR__));
-        require_once 'Skinny/Settings.php';
-        require_once 'Skinny/Loader.php';
-        require_once 'Skinny/Application/Components.php';
-        require_once 'Skinny/Router.php';
+        set_include_path(dirname(__DIR__) . PATH_SEPARATOR . $this->_config->paths->library('library', true) . PATH_SEPARATOR . get_include_path());
 
-        $this->_settings = new Settings($config_path);
+        // settings: only if enabled
+        if ($config->settings->enabled(false)) {
+            require_once 'Skinny/Settings.php';
+            $this->_settings = new Settings($config_path);
+        }
 
         // loader
-        $this->_loader = new Loader(
-                        $this->_config->path->action('app/Action', true),
-                        $this->_config->path->logic('app/Logic', true),
-                        $this->_config->path->library('library', true)
-        );
-        $this->_loader->initLoaders($this->_config->loader->toArray());
+        require_once 'Skinny/Loader.php';
+        $this->_loader = new Loader($this->_config->paths);
+        $this->_loader->initLoaders($this->_config->loaders->toArray());
         $this->_loader->register();
 
         // bootstrap
         $this->_components = new Components($this->_config);
         $this->_components->setInitializers($this->_config->components->toArray());
-
-        //
     }
 
     public function getConfig($key = null) {
@@ -66,8 +66,8 @@ class Application {
 
     public function run() {
         $router = new Router(
-                        $this->_config->path->action('app/Action', true),
-                        $this->_config->path->cache('cache', true),
+                        $this->_config->paths->content('content', true),
+                        $this->_config->paths->cache('cache', true),
                         $this->_config->router()
         );
     }

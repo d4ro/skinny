@@ -9,19 +9,29 @@ namespace Skinny;
  */
 class Loader {
 
+    const CAPACITY = 100;
+
     protected $_loaders;
     protected $_names;
-    protected $_action_path;
-    protected $_logic_path;
-    protected $_library_path;
+    protected $_paths;
 
-    public function __construct($action_path, $logic_path, $library_path) {
+    /**
+     * Konstruktor klasy
+     * @param Store $paths
+     */
+    public function __construct($paths) {
         $this->_loaders = array();
-        $this->_action_path = $action_path;
-        $this->_logic_path = $logic_path;
-        $this->_library_path = $library_path;
+        $this->_paths = $paths;
     }
 
+    /**
+     * Wstawia w kolejkę loaderów podaną instancję loadera z podaną nazwą i priorytetem w kolejce.
+     * @param \Skinny\Loader\LoaderInterface $loader
+     * @param string $name
+     * @param integer $priority
+     * @throws \InvalidArgumentException istnieje loader o podanej nazwie w kolejce
+     * @throws \OverflowException podany priorytet został umieszczony w kolejce maksymalną ilość razy
+     */
     public function putLoader(Loader\LoaderInterface $loader, $name, $priority = 5) {
         if (is_array($loader)) {
             foreach ($loader as $key => $instance)
@@ -32,8 +42,8 @@ class Loader {
         if (isset($this->_names[$name]))
             throw new \InvalidArgumentException('Loader named "' . $name . '" has already been put.');
 
-        $p = $priority * 100;
-        for ($i = $p; $i < $p + 100; $i++) {
+        $p = $priority * self::CAPACITY;
+        for ($i = $p; $i < $p + self::CAPACITY; $i++) {
             if (!isset($this->_loaders[$i])) {
                 $this->_loaders[$i] = $loader;
                 $this->_names[$name] = $i;
@@ -44,17 +54,26 @@ class Loader {
         throw new \OverflowException('Loader named "' . $name . '" cannot be put with priority ' . $priority . '. Container is full.');
     }
 
+    /**
+     * Rejestruje podany loader o ile nie został wcześniej zarejestrowany.
+     * Jeżeli nazwa loadera nie zostanie podana, zostaną zarejestrowane wszystkie niezajestrowane loadery
+     * w kolejności dodania do kolejki z uwzględnieniem priorytetu (niższe wartości priorytetu wpierw).
+     * @param string $name
+     * @throws \InvalidArgumentException loader o podanej nazwie nie został znaleziony
+     */
     public function register($name = null) {
-        // TODO: sortowanie po kluczach $this->_loaders
-        $keys = array_keys($this->_loaders);
-        sort($keys);
-        $loaders = array();
-        foreach ($keys as $key) {
-            $loaders[$key] = $this->_loaders[$key];
-        }
-        $this->_loaders = $loaders;
+        // DONE: sortowanie po kluczach $this->_loaders
+        // poniższe zostało zmienione na to co po nim następuje
+        /* $keys = array_keys($this->_loaders);
+          sort($keys);
+          $loaders = array();
+          foreach ($keys as $key) {
+          $loaders[$key] = $this->_loaders[$key];
+          }
+          $this->_loaders = $loaders; */
+        ksort($this->_loaders);
 
-        if (null === ($name)) {
+        if (null === $name) {
             foreach ($this->_loaders as $loader) {
                 if (!$loader->isRegistered())
                     $loader->register();
@@ -73,22 +92,25 @@ class Loader {
 
     public function initLoaders($loaders, $priority = 5) {
         $loaders = (array) $loaders;
-        include_once __DIR__ . '/Loader/Standard.php';
+        /*include_once __DIR__ . '/Loader/Standard.php';
         if (isset($loaders['standard'])) {
-            $class = new Loader\Standard($this->_action_path, $this->_logic_path, $this->_library_path, $loaders['standard']);
+            $class = new Loader\Standard($this->_paths, $loaders['standard']);
             unset($loaders['standard']);
         } else {
-            $class = new Loader\Standard($this->_action_path, $this->_logic_path, $this->_library_path);
+            $class = new Loader\Standard($this->_paths);
         }
-        $this->putLoader($class, 'standard', $priority);
+        $this->putLoader($class, 'standard', $priority);*/
 
         foreach ($loaders as $name => $config) {
             switch ($name) {
+                case 'standard':
+                    $path = 'Loader/Standard.php?\Skinny\Loader\Standard';
+                    break;
                 case 'namespace':
-                    $path = 'Skinny/Loader/NSpace.php?Skinny\Loader\NSpace';
+                    $path = 'Loader/NSpace.php?\Skinny\Loader\NSpace';
                     break;
                 case 'prefix':
-                    $path = 'Skinny/Loader/Prefix.php?Skinny\Loader\Prefix';
+                    $path = 'Loader/Prefix.php?\Skinny\Loader\Prefix';
                     break;
                 default:
                     $path = $name;
@@ -100,7 +122,7 @@ class Loader {
                 require_once $file;
             }
             $class_name = array_shift($parts);
-            $class = new $class_name($this->_action_path, $this->_logic_path, $this->_library_path, $config);
+            $class = new $class_name($this->_paths, $config);
             $this->putLoader($class, $name, $priority);
         }
     }

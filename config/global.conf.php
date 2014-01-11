@@ -1,43 +1,46 @@
 <?php
 
 // konfiguracja PHP
-// konfiduracja skinny'ego
+// konfiguracja Skinny'ego
 return array(
-    'path' => array(
-        // katalog akcji aplikacji; domyślnie 'app/Action'
-        'action' => 'app/Action',
-        // katalog logiki aplikacji; domyślnie 'app/Logic'
-        'logic' => 'app/Logic',
-        // katalog widoków aplikacji; domyślnie 'app/View'
-        'view' => 'app/View',
-        // katalog bibliotek; domyślnie 'library'
-        'library' => 'library',
-        // punkt wejścia z przeglądarki; domyślnie 'public'
-        'public' => 'public',
-        // katalog cache; domyślnie 'cache'
-        'cache' => 'cache',
+    'settings' => array(
+        // settings jest włączone; domyślnie false
+        'enabled' => true
     ),
-    'loader' => array(
+    // ścieżki względem katalogu public aplikacji
+    'paths' => array(
+        // katalog zawartości aplikacji; domyślnie 'content'
+        'content' => 'content',
+        // katalog modeli danych aplikacji; domyślnie 'models'
+        'models' => '../models',
+        // katalog bibliotek; domyślnie 'library'
+        'library' => '../library',
+        // katalog cache; domyślnie 'cache'
+        'cache' => '../cache',
+    ),
+    'loaders' => array(
         'standard' => array(
+            //pole wymagane, aby 'standard' nie było 'puste'
+            'enabled',
             // dodatkowe ścieżki ładowania, każda osobno
-            'path' => array(
+            'paths' => array(
             )
         ),
         'namespace' => array(
-            // ścieżki automatycznego ładowania z użyciem przestrzeni nazw
-            'Skinny' => 'library/Skinny'
+        // ścieżki automatycznego ładowania z użyciem przestrzeni nazw
+        //'Skinny' => '../library/Skinny'
         ),
         'prefix' => array(
             // ścieżki automatycznego ładowania z użyciem prefiksów
-            'Zend' => 'library/Zend'
+            'Zend' => '../library/Zend'
         ),
-        // customowe loadery
-        /* 'app/Logic/CustomLoader.php?Logic\CustomLoader' => array(
-          // konfiguracja loadera, jako array do konstruktora
-          'klucz' => 'wartość'
-          ),
-          'Logic\Other\CustomLoader' => array(
-          ) */
+    // customowe loadery
+    /* 'CustomLoader.php?CustomLoader' => array(
+      // konfiguracja loadera, jako array do konstruktora
+      'klucz' => 'wartość'
+      ),
+      'OtherCustomLoader' => array(
+      ) */
     ),
     'router' => array(
         'action_cache' => array(
