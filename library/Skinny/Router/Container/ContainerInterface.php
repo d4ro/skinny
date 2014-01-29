@@ -8,15 +8,11 @@ namespace Skinny\Router\Container;
  */
 interface ContainerInterface {
 
-    public function setAction(array $actionParts);
-
-    public function setActionMatch(bool $actionMatch);
-
-    public function setArgs(array $args);
-
-    public function setParams(array $params);
+    public function getRequestUrl();
 
     public function getAction();
+
+    public function getActionPath();
 
     public function getActionParts();
 
@@ -27,4 +23,18 @@ interface ContainerInterface {
     public function getArgs();
 
     public function getParams();
+
+    public function setRequestUrl($requestUrl);
+
+    public function setAction($action);
+
+    public function setActionParts(array $actionParts);
+
+    public function setActionMatch($actionMatch);
+
+    public function resetArgs(array $args);
+
+    public function setParams(array $params);
+
+    public function resetParams(array $params = array());
 }

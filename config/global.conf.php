@@ -54,6 +54,7 @@ return array(
     ),
     'view' => array(
     ),
+    // TODO: przenieść components do osobnego pliku w config/components.php
     'components' => array(
         // bootstrap
         'view' => function() {
@@ -69,4 +70,9 @@ return array(
             return true;
         }
     ),
+    // akcje obsługujące nieoczekiwane wyjątki
+    'actions' => [
+        'error' => '/error',
+        'notFound' => '/404'
+    ]
 );

@@ -9,7 +9,7 @@ namespace Action;
  */
 class Test extends \Skinny\Action {
 
-    public function permission() {
+    public function permit() {
         $this->setUsage($ways);
     }
 

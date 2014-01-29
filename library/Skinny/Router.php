@@ -7,7 +7,7 @@ use Skinny\Router\Container;
 //require_once 'Skinny/Router/RouterInterface.php';
 
 /**
- * Description of Router
+ * Router ma za zadanie przeparsować request url i porównać ze ścieżką akcji w celu określenia akcji do wykonania.
  *
  * @author Daro
  */
@@ -15,7 +15,7 @@ class Router implements Router\RouterInterface {
 
     protected $_content_path;
     protected $_cache_path;
-    protected $_base_path;
+    protected $_base_url;
 
     /**
      *
@@ -45,27 +45,27 @@ class Router implements Router\RouterInterface {
         static::$_instance = $this;
     }
 
-    public function getRoute($path, Container\ContainerInterface $container = null) {
+    public function getRoute($request_url, Container\ContainerInterface $container = null) {
         // jeżeli nie ma gdzie składować wyników, tworzymy nowy kontener
         if (null === $container)
             $container = new Container();
 
         // pobieramy ścieżkę bazową aplikacji
-        $base_path = $this->getBasePath();
-        if ($base_path && strpos($path, "/$base_path") === 0) {
-            $path = substr($path, strlen($base_path) + 1);
+        $base_path = $this->getBaseUrl();
+        if ($base_path && strpos($request_url, "/$base_path") === 0) {
+            $request_url = substr($request_url, strlen($base_path) + 1);
         }
 
         // ustawiamy argumenty wywołania
-        $path = ltrim($path, '/');
-        $args = explode('/', $path);
-        $container->setArgs($args);
+        $request_url = ltrim($request_url, '/');
+        $args = explode('/', $request_url);
+        $container->resetArgs($args);
 
         // określamy akcję
         // TODO: akcja nie odnaleziona i co wtedy?
         $action_length = $this->findAction($args);
         $action_parts = array_slice($args, 0, $action_length);
-        $container->setAction($action_parts);
+        $container->setActionParts($action_parts);
 
         // określamy parametry
         $params = array();
@@ -79,10 +79,10 @@ class Router implements Router\RouterInterface {
         return $container;
     }
 
-    public function getBasePath() {
-        if (null === $this->_base_path)
-            $this->_base_path = trim($this->_config->base_path('/', true), '/');
-        return $this->_base_path;
+    public function getBaseUrl() {
+        if (null === $this->_base_url)
+            $this->_base_url = trim($this->_config->base_path('/', true), '/');
+        return $this->_base_url;
     }
 
     public function findAction($args) {

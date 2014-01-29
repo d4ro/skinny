@@ -9,7 +9,7 @@ namespace content\test;
  */
 class foo extends content\test {
 
-    public function permission() {
+    public function permit() {
         
     }
 

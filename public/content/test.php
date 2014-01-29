@@ -9,7 +9,7 @@ namespace content;
  */
 class test extends \Skinny\Action {
 
-    public function permission() {
+    public function permit() {
         
     }
 

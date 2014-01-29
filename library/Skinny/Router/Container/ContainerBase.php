@@ -10,10 +10,22 @@ namespace Skinny\Router\Container;
 abstract class ContainerBase implements ContainerInterface {
 
     /**
+     * Ścieżka URL żądania
+     * @var string
+     */
+    protected $_requestUrl;
+
+    /**
+     * Obiekt akcji
+     * @var \Skinny\Action
+     */
+    protected $_action;
+
+    /**
      * Ścieżka żądania do akcji
      * @var string
      */
-    protected $_action;
+    protected $_actionPath;
 
     /**
      * Części składowe ścieżki do akcji
@@ -43,7 +55,7 @@ abstract class ContainerBase implements ContainerInterface {
      * Ilość argumentów zapytania
      * @var integer
      */
-    protected $_argsCount;
+    protected $_argCount;
 
     /**
      * Parametry zapytania
@@ -55,28 +67,37 @@ abstract class ContainerBase implements ContainerInterface {
      * Ilość parametrów zapytania
      * @var integer
      */
-    protected $_paramsCount;
+    protected $_paramCount;
 
     /**
      * Konstruktor inicjujący wartości domyślne.
      */
     public function __construct() {
-        $this->_action = '';
+        $this->_action = null;
+        $this->_actionPath = '';
         $this->_actionParts = array();
         $this->_actionDepth = 0;
         $this->_actionMatch = false;
         $this->_args = array();
-        $this->_argsCount = 0;
+        $this->_argCount = 0;
         $this->_params = array();
-        $this->_paramsCount = 0;
+        $this->_paramCount = 0;
+    }
+
+    public function getRequestUrl() {
+        return $this->_requestUrl;
+    }
+
+    public function getAction() {
+        return $this->_action;
     }
 
     /**
      * Pobiera ścieżkę akcji
      * @return string
      */
-    public function getAction() {
-        return $this->_action;
+    public function getActionPath() {
+        return $this->_actionPath;
     }
 
     public function getActionDepth() {
@@ -95,36 +116,49 @@ abstract class ContainerBase implements ContainerInterface {
         return $this->_args;
     }
 
-    public function getArgsCount() {
-        return $this->_argsCount;
+    public function getArgCount() {
+        return $this->_argCount;
     }
 
     public function getParams() {
         return $this->_params;
     }
 
-    public function getParamsCount() {
-        return $this->_paramsCount;
+    public function getParamCount() {
+        return $this->_paramCount;
     }
 
-    public function setAction(array $actionParts) {
+    public function setRequestUrl($requestUrl) {
+        $this->_requestUrl = $requestUrl;
+    }
+
+    public function setAction($action) {
+        $this->_action = $action;
+    }
+
+    public function setActionParts(array $actionParts) {
         $this->_actionParts = $actionParts;
-        $this->_action = implode('/', $actionParts);
+        $this->_actionPath = implode('/', $actionParts);
         $this->_actionDepth = count($actionParts);
     }
 
-    public function setActionMatch(bool $actionMatch) {
+    public function setActionMatch($actionMatch) {
         $this->_actionMatch = (bool) $actionMatch;
     }
 
-    public function setArgs(array $args) {
+    public function resetArgs(array $args) {
         $this->_args = $args;
-        $this->_argsCount = count($args);
+        $this->_argCount = count($args);
     }
 
     public function setParams(array $params) {
+        $this->_params = array_merge($this->_params, $params);
+        $this->_paramCount = count($this->_params);
+    }
+
+    public function resetParams(array $params = array()) {
         $this->_params = $params;
-        $this->_paramsCount = count($params);
+        $this->_paramCount = count($this->_params);
     }
 
 }

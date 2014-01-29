@@ -41,7 +41,7 @@ abstract class Action {
      * Aby akcja została uruchomiona, należy sprecyzować przynajmniej jeden sposób (way)
      * wykorzystania akcji przez użytkownika (przy pomocy $this->getUsage()->allowUsage()).
      */
-    abstract public function permission();
+    abstract public function permit();
 
     /**
      * [Składnik akcji - opcjonalny]
@@ -69,7 +69,11 @@ abstract class Action {
 
     /* krytyczne */
 
-    public function getUsage() {
+    /**
+     * 
+     * @return Action\Usage
+     */
+    final public function getUsage() {
         return $this->_usage;
     }
 
@@ -116,8 +120,8 @@ abstract class Action {
 
     /* uzytkowe */
 
-    public function getArgsCount() {
-        return $this->getRequest()->current()->getArgsCount();
+    public function getArgCount() {
+        return $this->getRequest()->current()->getArgCount();
     }
 
     public function getArg($index, $default = null) {
@@ -144,8 +148,8 @@ abstract class Action {
      * Pobiera ścieżkę żądania do aktualnej akcji.
      * @return string
      */
-    public function getAction() {
-        return $this->getRequest()->current()->getAction();
+    public function getActionPath() {
+        return $this->getRequest()->current()->getActionPath();
     }
 
     /**
@@ -160,8 +164,8 @@ abstract class Action {
      * Pobiera ścieżkę bazową aplikacji.
      * @return string
      */
-    public function getBasePath() {
-        return '/' . $this->getRequest()->getRouter()->getBasePath();
+    public function getBaseUrl() {
+        return '/' . $this->getRequest()->getRouter()->getBaseUrl();
     }
 
     /**
@@ -171,6 +175,15 @@ abstract class Action {
     public function isForwarded() {
         // TODO: czy to jest potrzebne?
         return (null !== $this->getRequest()->previous());
+    }
+
+    /**
+     * Przekierowuje aktualną akcję na kolejną
+     * @param string $request_url url akcji
+     * @param array $params opcjonalne parametry
+     */
+    final protected function forward($request_url, array $params = array()) {
+        $this->getRequest()->next(new Request\Step($request_url, $params));
     }
 
 }

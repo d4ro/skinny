@@ -9,7 +9,7 @@ namespace content;
  */
 class index extends \Skinny\Action {
 
-    public function permission() {
+    public function permit() {
         
     }
 
