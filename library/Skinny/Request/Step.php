@@ -51,6 +51,7 @@ class Step extends Router\Container\ContainerBase {
         $this->_params = $params;
         $this->_actionMatch = true;
         $this->_resolved = false;
+        $this->_processed = false;
     }
 
     public function next(Step $step = null) {

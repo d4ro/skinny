@@ -6,7 +6,7 @@ use Skinny\Db;
 
 class Index extends \Skinny\Action {
 
-    function init() {
+    function _init() {
 //        $db = new Db($dsn);
 //        $sql = $db->sql()->update()
 //                ->table('acl_uzytkownicy as a')

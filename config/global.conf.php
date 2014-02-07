@@ -43,12 +43,12 @@ return array(
       ) */
     ),
     'router' => array(
-        'action_cache' => array(
+        'actionCache' => array(
             // czy cache'owanie akcji ma być włączone, domyślnie tak (1); dla dev lepiej wyłączyć
             'enabled' => 1,
         ),
         // ścika bazowa www aplikacji
-        'base_path' => '/',
+        'baseUrl' => '/',
     ),
     'db' => array(
     ),

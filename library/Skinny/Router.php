@@ -13,9 +13,10 @@ use Skinny\Router\Container;
  */
 class Router implements Router\RouterInterface {
 
-    protected $_content_path;
-    protected $_cache_path;
-    protected $_base_url;
+    protected $_contentPath;
+    protected $_cachePath;
+    protected $_baseUrl;
+    protected $_request;
 
     /**
      *
@@ -37,59 +38,154 @@ class Router implements Router\RouterInterface {
         return static::$_instance;
     }
 
-    public function __construct($content_path, $cache_path, $config = array()) {
-        $this->_content_path = $content_path;
-        $this->_cache_path = $cache_path;
+    public function __construct($contentPath, $cachePath, $config = array()) {
+        $this->_contentPath = $contentPath;
+        $this->_cachePath = $cachePath;
         $this->_config = ($config instanceof Store) ? $config : new Store($config);
 
         static::$_instance = $this;
     }
 
-    public function getRoute($request_url, Container\ContainerInterface $container = null) {
+    public function setRequest($request) {
+        $this->_request = $request;
+    }
+
+    public function getRoute($requestUrl, Container\ContainerInterface $container = null) {
         // jeżeli nie ma gdzie składować wyników, tworzymy nowy kontener
         if (null === $container)
             $container = new Container();
 
+        // obsługa parametrów po "?"
+        $additionalParams = [];
+        if (false !== ($qmIndex = strpos($requestUrl, '?'))) {
+            $apString = substr($requestUrl, $qmIndex + 1);
+            $requestUrl = substr($requestUrl, 0, $qmIndex);
+            parse_str($apString, $additionalParams);
+        }
+
         // pobieramy ścieżkę bazową aplikacji
-        $base_path = $this->getBaseUrl();
-        if ($base_path && strpos($request_url, "/$base_path") === 0) {
-            $request_url = substr($request_url, strlen($base_path) + 1);
+        $baseUrl = $this->getBaseUrl();
+        if ($baseUrl && strpos($requestUrl, "/$baseUrl") === 0) {
+            $requestUrl = substr($requestUrl, strlen($baseUrl) + 1);
         }
 
         // ustawiamy argumenty wywołania
-        $request_url = ltrim($request_url, '/');
-        $args = explode('/', $request_url);
+        $requestUrl = ltrim($requestUrl, '/');
+        if (empty($requestUrl))
+            $requestUrl = 'index';
+        $args = explode('/', $requestUrl);
+
         $container->resetArgs($args);
 
         // określamy akcję
-        // TODO: akcja nie odnaleziona i co wtedy?
-        $action_length = $this->findAction($args);
-        $action_parts = array_slice($args, 0, $action_length);
-        $container->setActionParts($action_parts);
+        $actionLength = $this->findAction($args);
+        if ($actionLength > 0) {
+            $actionParts = array_slice($args, 0, $actionLength);
+            $container->setActionParts($actionParts);
+            $actionClassName = '\\content\\' . implode('\\', $actionParts);
+            try {
+                if (!class_exists($actionClassName, false)) {
+                    $actionFile = Path::combine($this->_contentPath, $actionParts) . '.php';
+                    require $actionFile;
+                }
+                $container->setAction(new $actionClassName($this->_request));
+            } catch (Exception $e) {
+                
+            }
+        }
 
         // określamy parametry
         $params = array();
-        var_dump($action_length, $args);
-        for ($i = $action_length; $i < count($args); $i += 2) {
+        for ($i = $actionLength; $i < count($args); $i += 2) {
             if (isset($args[$i + 1]))
                 $params[$args[$i]] = $args[$i + 1];
         }
         $container->setParams($params);
+        $container->setParams($additionalParams);
 
         return $container;
     }
 
     public function getBaseUrl() {
-        if (null === $this->_base_url)
-            $this->_base_url = trim($this->_config->base_path('/', true), '/');
-        return $this->_base_url;
+        if (null === $this->_baseUrl)
+            $this->_baseUrl = trim($this->_config->baseUrl('/', true), '/');
+        return $this->_baseUrl;
     }
 
-    public function findAction($args) {
-        // TODO
-        // bardzo TODO
-        // bardzo kurwa TODO
-        // teraz to już kurwa trzeba to zrobić bo ja pierdole bez tego nie będzie działać w ogóle podstawka... czy zdajesz sobie z tego kurwa sprawę??? zrób to już i nie marudź!
+    /**
+     * Znajduje akcję na podstawie tablicy argumentów zapytania podając ilość zgodnych argumentów licząc od początku.
+     * @param array $args
+     * @return int ilość zgodnych argumentów
+     */
+    public function findAction(array $args) {
+        $x = Path::combine($this->_cachePath, 'actions.php');
+        $actions = @include $x;
+
+        if (empty($actions))
+            $actions = $this->resolveActions();
+
+        $i = 0;
+        $found = -1;
+        $count = count($args);
+        $match = false;
+
+        do {
+            if ($i >= $count)
+                break;
+
+            if (in_array($args[$i], $actions))
+                $found = $i;
+
+            $match = isset($actions[$args[$i]]);
+        } while ($match && $actions = $actions[$args[$i++]]);
+
+        return $found + 1;
+    }
+
+    /**
+     * Iteruje po katalogu zawartości aplikacji wyszukując pliki .php akcji.
+     * Rezultat wyszukiwania zapisuje w cache.
+     * @return array tablica będąca reprezentacją struktury akcji w folderze zawartości aplikacji
+     * @throws IOException
+     */
+    protected function resolveActions() {
+        if (!is_dir($this->_contentPath))
+            throw new IOException('Could not read application content directory.');
+
+        $actions = self::readDir($this->_contentPath);
+        $actionsPath = Path::combine($this->_cachePath, 'actions.php');
+
+        $file = new File($actionsPath);
+        $file->write('<?php return ' . var_export($actions, true) . ';');
+        return $actions;
+    }
+
+    /**
+     * Odczytuje zawartość katalogu i zwraca tablicę jego zawartości, gdzie:
+     * - pliki (wyłącznie z rozszerzeniem .php, niezaczynające się od kropki "."):
+     *   reprezentowane są bez rozszerzenia, pod kolejnym indeksem numerycznym
+     * - katalogi (niezaczynające się od kropki "."):
+     *   reprezentowane są w kluczu, gdzie wartość jest rekurencyjną zawartością katalogu
+     * @param string $dirPath ścieżka do katalogu
+     * @return array
+     */
+    protected static function readDir($dirPath) {
+        $dir = dir($dirPath);
+        $actions = [];
+        while ($item = $dir->read()) {
+            $path = $dirPath . DIRECTORY_SEPARATOR . $item;
+            if ($item[0] == '.')
+                continue;
+
+            if (is_dir($path)) {
+                $actions[$item] = self::readDir($path);
+                continue;
+            }
+
+            if (substr($item, -4) == '.php')
+                $actions[] = substr($item, 0, -4);
+        }
+        return $actions;
     }
 
 }

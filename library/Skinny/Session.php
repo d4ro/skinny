@@ -13,5 +13,6 @@ class Session extends ArrayWrapper {
         parent::__construct($_SESSION);
     }
 
+    // TODO: filtry do danych
     // TODO: funkcje obsługujące automatyczny odczyt/zapis do bazy
 }

@@ -5,7 +5,6 @@ namespace Skinny\Loader;
 use Skinny\Store;
 
 require_once 'Skinny\Loader\LoaderInterface.php';
-require_once 'Skinny\Store.php';
 
 /**
  * Description of LoaderBase
@@ -29,7 +28,8 @@ abstract class LoaderBase implements LoaderInterface {
     }
 
     public function register() {
-        spl_autoload_register(array($this, 'load'));
+        if (!$this->_registered)
+            spl_autoload_register(array($this, 'load'));
         $this->_registered = true;
     }
 

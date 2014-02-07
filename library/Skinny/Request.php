@@ -25,7 +25,7 @@ class Request {
      * @return Request\Step
      */
     public function current() {
-        if ($this->_current < 0 || $this->_stepCount < 1)
+        if ($this->_current < 0 || $this->_stepCount <= $this->_current)
             return null;
         return $this->_steps[$this->_current];
     }
@@ -71,6 +71,7 @@ class Request {
         }
 
         $this->_steps[$this->_current + 1] = $step;
+        ++$this->_stepCount;
 
         $current = $this->current();
         if (null !== $current)
@@ -91,18 +92,24 @@ class Request {
       } */
 
     // tego na razie nie ruszamy, ale będzie do zastąpienia przez next() i process()
-    protected function _step(Request\Step $step) {
-        $current = $this->current();
-        if (null !== $current)
-            $current->next($step)->previous($current);
-        $this->_steps[] = $step;
-        ++$this->_current;
-        $step->resolve($this->getRouter());
-    }
-
+//    protected function _step(Request\Step $step) {
+//        $current = $this->current();
+//        if (null !== $current)
+//            $current->next($step)->previous($current);
+//        $this->_steps[] = $step;
+//        ++$this->_current;
+//        $step->resolve($this->getRouter());
+//    }
     // tego na razie nie ruszamy, ale będzie do zastąpienia przez next() i process()
-    public function step($path, $params = array()) {
-        $this->_step(new Request\Step($path, $params));
+//    public function step($path, $params = array()) {
+//        $this->_step(new Request\Step($path, $params));
+//    }
+
+    public function proceed() {
+        $current = $this->current();
+        if (null != $current)
+            $current->setProcessed(true);
+        ++$this->_current;
     }
 
     public function isProcessed() {
@@ -112,6 +119,7 @@ class Request {
 
     public function isResolved() {
         $current = $this->current();
+        //if(null === $current && ($current = $this->next()))
         return(null === $current || $current->isResolved());
     }
 
@@ -141,6 +149,7 @@ class Request {
     public function getRouter() {
         if (null === $this->_router)
             $this->_router = Router::getInstance();
+        $this->_router->setRequest($this);
         return $this->_router;
     }
 

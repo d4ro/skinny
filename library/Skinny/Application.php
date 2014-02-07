@@ -19,6 +19,7 @@ class Application {
     protected $_components;
     protected $_router;
     protected $_request;
+    protected $_response;
 
     /**
      * Konstruktor obiektu aplikacji Skinny
@@ -26,7 +27,7 @@ class Application {
      */
     public function __construct($config_path = 'config') {
         // config
-        include_once __DIR__ . '/Store.php';
+        require_once __DIR__ . '/Store.php';
         $env = isset($_SERVER['APPLICATION_ENV']) ? $_SERVER['APPLICATION_ENV'] : 'production';
         $config = new Store(include $config_path . '/global.conf.php');
         if (file_exists($local_config = $config_path . '/' . $env . '.conf.php'))
@@ -63,6 +64,10 @@ class Application {
         $this->_request = new Request();
     }
 
+    public function getEnvironment() {
+        return $this->_env;
+    }
+
     public function getConfig($key = null) {
         if (null === $key)
             return $this->_config;
@@ -70,8 +75,23 @@ class Application {
         return $this->_config->$key(null);
     }
 
+    public function getSettings($key = null) {
+        if (null === $key)
+            return $this->_settings;
+
+        return $this->_settings->$key(null);
+    }
+
     public function getComponents() {
         return $this->_components;
+    }
+
+    public function getComponent($name) {
+        // TODO
+    }
+
+    public function __get($name) {
+        return $this->getComponent($name);
     }
 
     public function getRouter() {
@@ -82,11 +102,18 @@ class Application {
         return $this->_request;
     }
 
+    public function getResponse() {
+        return $this->_response;
+    }
+
     public function run($request_url = null, $params = array()) {
         if (null === $request_url)
             $request_url = $_SERVER['REQUEST_URI'];
 
-        $this->_request->step($request_url, $params);
+        $this->_request->next(new Request\Step($request_url, $params));
+        if (null === $this->_response)
+            $this->_response = new Response\Http();
+
         while (!$this->_request->isProcessed()) {
             try {
 
@@ -98,7 +125,7 @@ class Application {
                     $notFoundAction = $this->_config->actions->notFound(null);
                     if (null === $notFoundAction) {
                         $this->_request->next(new Request\Step($notFoundAction, ['error' => 'notFound', 'requestStep' => $this->_request->current()]));
-                        $this->_request->current()->setProcessed(true);
+                        $this->_request->proceed();
                         continue;
                     }
                     else
@@ -116,9 +143,9 @@ class Application {
 
                 if (!$action->getUsage()->hasAny()) {
                     $errorAction = $this->_config->actions->error(null);
-                    if (null === $errorAction) {
+                    if (null !== $errorAction) {
                         $this->_request->next(new Request\Step($errorAction, ['error' => 'accessDenied', 'requestStep' => $this->_request->current()]));
-                        $this->_request->current()->setProcessed(true);
+                        $this->_request->proceed();
                         continue;
                     }
                     else
@@ -138,24 +165,26 @@ class Application {
 
                 $action->cleanup();
 
-                $this->_request->current()->setProcessed(true);
+                $this->_request->proceed();
             } catch (\Exception $e) {
                 $errorAction = $this->_config->actions->error(null);
                 if (null === $errorAction) {
                     $this->_request->next(new Request\Step($errorAction, ['error' => 'exception', 'requestStep' => $this->_request->current(), 'exception' => $e]));
-                    $this->_request->current()->setProcessed(true);
+                    $this->_request->proceed();
                     continue;
                 }
                 else
                     throw $e;
             }
         }
+
+        $this->_response->respond();
     }
 
     protected function isRequestForwarded() {
         $forwarded = null !== $this->_request->next();
         if ($forwarded)
-            $this->_request->current()->setProcessed(true);
+            $this->_request->proceed();
         return $forwarded;
     }
 

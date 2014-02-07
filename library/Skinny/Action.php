@@ -13,13 +13,13 @@ abstract class Action {
     private $_usage;
 
     /**
-     * Konstruktor akcji - nie przeciążamy! Od tego jest init().
+     * Konstruktor akcji - nie przeciążamy! Od tego jest _init().
      * @param \Skinny\Request $request zapytanie HTTP
      */
     final public function __construct(Request $request) {
         $this->_request = $request;
         $this->_usage = new Action\Usage();
-        $this->init();
+        $this->_init();
     }
 
     /**
@@ -31,7 +31,7 @@ abstract class Action {
      * - akcji (d. action)                 action
      * - porządkowań (d. postDispatch)     cleanup
      */
-    public function init() {
+    public function _init() {
         
     }
 

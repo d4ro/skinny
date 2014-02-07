@@ -13,11 +13,17 @@ class Path {
      * Łączy podane ścieżki w jedną, dodając znak rozdzielający katalogi, jeśli to konieczne.
      * Jeżeli argument jest ścieżką bezwzględną, poprzedzający nie będzie brany pod uwagę.
      * Metoda zezwala na dowolną ilość argumentów. Kolejne będą uwzględniane rekurencyjnie.
-     * @param string $path1
-     * @param string $path2
+     * @param string|array $path1
+     * @param string|array $path2
      * @return string
      */
     public static function combine($path1, $path2) {
+        if (is_array($path1))
+            $path1 = call_user_func_array(array(__CLASS__, __METHOD__), $path1);
+
+        if (is_array($path2))
+            $path2 = call_user_func_array(array(__CLASS__, __METHOD__), $path2);
+
         if (empty($path1))
             return $path2;
 
