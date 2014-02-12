@@ -9,7 +9,7 @@ use Skinny\Store;
  *
  * @author Daro
  */
-class Components {
+class Components implements \ArrayAccess {
 
     /**
      * Konfiguracja kontenera
@@ -51,7 +51,7 @@ class Components {
     /**
      * Pobiera z konfiguracji kontenera ustawienie o podanym kluczu. Jeżeli klucz zostanie pominięty, zwracana jest pełna konfiguracja.
      * @param string $key
-     * @return type
+     * @return mixed
      */
     public function getConfig($key = null) {
         if (null === $key)
@@ -75,12 +75,25 @@ class Components {
      * @return object
      */
     public function getComponent($name) {
-        if ($this->isInitialized($name))
-            return $this->_components[$name];
+        if (!$this->isInitialized($name)) {
+            if (!$this->hasInitializer($name))
+                return null;
 
-        // TODO: inicjalizacja i zwrotka obiektu
+            $this->initialize($name);
+        }
 
-        return null;
+        return $this->_components[$name];
+    }
+
+    /**
+     * Usuwa komponent i inicjalizator komponentu o podanej nazwie.
+     * @param string $name
+     */
+    public function removeComponent($name) {
+        if (isset($this->_components[$name]))
+            unset($this->_components[$name]);
+        if (isset($this->_initializers[$name]))
+            unset($this->_initializers[$name]);
     }
 
     /**
@@ -115,7 +128,7 @@ class Components {
      * @param array $initializers
      * @throws \InvalidArgumentException
      */
-    public function setInitializers($initializers = array()) {
+    public function setInitializers(array $initializers) {
         if (!empty($initializers))
             foreach ($initializers as $name => $initializer) {
                 if (is_numeric($name))
@@ -148,6 +161,7 @@ class Components {
         $names = (array) $name;
         foreach ($names as $component) {
             if ($this->isInitialized($component))
+            // TODO: a może nic nie robić?
                 throw new \InvalidArgumentException('Component name "' . $component . '" has already been initialized.');
 
             if (!$this->hasInitializer($component))
@@ -161,6 +175,41 @@ class Components {
             $this->_components[$component] = $result;
             unset($this->_initializers[$component]);
         }
+    }
+
+    /**
+     * Stwierdza, czy komponent o podanej nazwie istnieje.
+     * @param string $offset
+     * @return boolean
+     */
+    public function offsetExists($offset) {
+        return $this->hasComponent($offset);
+    }
+
+    /**
+     * Pobiera komponent o podanej nazwie. W razie potrzeby inicjalizuje go.
+     * @param string $offset
+     * @return mixed
+     */
+    public function offsetGet($offset) {
+        return $this->getComponent($offset);
+    }
+
+    /**
+     * Ustawia inicjalizator komponentu pod podaną nazwą.
+     * @param string $offset
+     * @param \Closure $value
+     */
+    public function offsetSet($offset, $value) {
+        $this->setInitializers([$offset => $value]);
+    }
+
+    /**
+     * Usuwa komponent o podanej nazwie.
+     * @param string $offset
+     */
+    public function offsetUnset($offset) {
+        $this->removeComponent($offset);
     }
 
 }

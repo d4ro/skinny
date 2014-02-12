@@ -4,40 +4,64 @@ namespace Skinny;
 
 use Skinny\Router\Container;
 
-//require_once 'Skinny/Router/RouterInterface.php';
-
 /**
+ * Klasa obiektu routera.
  * Router ma za zadanie przeparsować request url i porównać ze ścieżką akcji w celu określenia akcji do wykonania.
  *
  * @author Daro
  */
 class Router implements Router\RouterInterface {
 
+    /**
+     * Ścieżka do katalogu z plikami zawartości aplikacji
+     * @var string
+     */
     protected $_contentPath;
+
+    /**
+     * Ścieżka do katalogu z cache aplikacji
+     * @var string
+     */
     protected $_cachePath;
+
+    /**
+     * Ścieżka bazowa URL
+     * @var string
+     */
     protected $_baseUrl;
+
+    /**
+     * Obiekt zapytania, który aktualnie odnosi się do routera
+     * @var Request
+     */
     protected $_request;
 
     /**
-     *
+     * Konfiguracja routera
      * @var Store
      */
     protected $_config;
 
     /**
-     *
+     * Instancja ostatnio tworzonego routera
      * @var Router
      */
     protected static $_instance;
 
     /**
-     * 
+     * Pobiera instację ostatnio tworzonego routera.
      * @return Router
      */
     public static function getInstance() {
         return static::$_instance;
     }
 
+    /**
+     * Konstruktor obiektu routera. Pobiera ścieżkę zawartości aplikacji i cache'u oraz ustawnia router podaną konfiguracją.
+     * @param string $contentPath
+     * @param string $cachePath
+     * @param Store|array $config
+     */
     public function __construct($contentPath, $cachePath, $config = array()) {
         $this->_contentPath = $contentPath;
         $this->_cachePath = $cachePath;
@@ -46,10 +70,20 @@ class Router implements Router\RouterInterface {
         static::$_instance = $this;
     }
 
+    /**
+     * Ustawia obiekt żądania przypisany do aktualnej pracy routera.
+     * @param type $request
+     */
     public function setRequest($request) {
         $this->_request = $request;
     }
 
+    /**
+     * Pobiera trasę z adresu URL. Wyciąga z niej żądaną akcję, parametry i argumenty, zapisuje do kontenera i go zwraca.
+     * @param string $requestUrl
+     * @param \Skinny\Router\Container\ContainerInterface $container
+     * @return \Skinny\Router\Container\ContainerInterface
+     */
     public function getRoute($requestUrl, Container\ContainerInterface $container = null) {
         // jeżeli nie ma gdzie składować wyników, tworzymy nowy kontener
         if (null === $container)
@@ -106,6 +140,10 @@ class Router implements Router\RouterInterface {
         return $container;
     }
 
+    /**
+     * Pobiera bazową ścieżkę URL
+     * @return string
+     */
     public function getBaseUrl() {
         if (null === $this->_baseUrl)
             $this->_baseUrl = trim($this->_config->baseUrl('/', true), '/');
@@ -115,7 +153,7 @@ class Router implements Router\RouterInterface {
     /**
      * Znajduje akcję na podstawie tablicy argumentów zapytania podając ilość zgodnych argumentów licząc od początku.
      * @param array $args
-     * @return int ilość zgodnych argumentów
+     * @return integer ilość zgodnych argumentów
      */
     public function findAction(array $args) {
         $x = Path::combine($this->_cachePath, 'actions.php');

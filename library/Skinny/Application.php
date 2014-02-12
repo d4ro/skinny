@@ -12,17 +12,56 @@ use Skinny\Application\Components;
  */
 class Application {
 
+    /**
+     * Nazwa środowiska uruchomieniowego aplikacji
+     * @var string
+     */
     protected $_env;
+
+    /**
+     * Konfiguracja aplikacji
+     * @var Store
+     */
     protected $_config;
+
+    /**
+     * Dynamiczne ustawienia aplikacji
+     * @var Settings
+     */
     protected $_settings;
+
+    /**
+     * Komponent loadera zarządzający dynamicznym ładowaniem plików klas PHP
+     * @var Loader
+     */
     protected $_loader;
+
+    /**
+     * Dynamiczne komponenty aplikacji
+     * @var Components
+     */
     protected $_components;
+
+    /**
+     * Obiekt routera rozwiązujący ścieżki do akcji
+     * @var Router
+     */
     protected $_router;
+
+    /**
+     * Obiekt żądania posiadający informacje o wszystkich krokach żądań
+     * @var type 
+     */
     protected $_request;
+
+    /**
+     * Obiekt odpowiedzi zarządzający informacją zwrotną
+     * @var Response\ResponseInterface
+     */
     protected $_response;
 
     /**
-     * Konstruktor obiektu aplikacji Skinny
+     * Konstruktor obiektu aplikacji Skinny.
      * @param string $config_path ścieżka do katalogu z konfiguracją względem miejsca, w którym tworzona jest instancja
      */
     public function __construct($config_path = 'config') {
@@ -64,49 +103,98 @@ class Application {
         $this->_request = new Request();
     }
 
+    /**
+     * Pobiera nazwę środowiska uruchomieniowego aplikacji.
+     * @return string
+     */
     public function getEnvironment() {
         return $this->_env;
     }
 
+    /**
+     * Pobiera konfigurację aplikacji.
+     * @param string $key
+     * @return mixed
+     */
     public function getConfig($key = null) {
-        if (null === $key)
+        $key = (string) $key;
+        if (empty($key))
             return $this->_config;
 
         return $this->_config->$key(null);
     }
 
+    /**
+     * Pobiera ustawienia aplikacji.
+     * @param string $key
+     * @return mixed
+     */
     public function getSettings($key = null) {
-        if (null === $key)
+        $key = (string) $key;
+        if (empty($key))
             return $this->_settings;
 
         return $this->_settings->$key(null);
     }
 
+    /**
+     * Pobiera komponenty aplikacji.
+     * @return Components
+     */
     public function getComponents() {
         return $this->_components;
     }
 
+    /**
+     * Pobiera komponent aplikacji o podanej nazwie.
+     * @param string $name
+     * @return mixed
+     */
     public function getComponent($name) {
-        // TODO
+        return $this->_components->getComponent($name);
     }
 
+    /**
+     * Pobiera komponent aplikacji o podanej nazwie.
+     * @param string $name
+     * @return mixed
+     */
     public function __get($name) {
         return $this->getComponent($name);
     }
 
+    /**
+     * Pobiera obiekt routera.
+     * @return Router
+     */
     public function getRouter() {
         return $this->_router;
     }
 
+    /**
+     * Pobiera obiekt zapytania.
+     * @return Request
+     */
     public function getRequest() {
         return $this->_request;
     }
 
+    /**
+     * Pobiera obiekt odpowiedzi.
+     * @return Response\ResponseInterface
+     */
     public function getResponse() {
         return $this->_response;
     }
 
-    public function run($request_url = null, $params = array()) {
+    /**
+     * Główna pętla wykonań żądań do akcji aplikacji.
+     * @param string $request_url url pierwszego żądania
+     * @param array $params parametry pierwszego żądania
+     * @throws \Skinny\Exception
+     * @throws Action\Exception
+     */
+    public function run($request_url = null, array $params = array()) {
         if (null === $request_url)
             $request_url = $_SERVER['REQUEST_URI'];
 
@@ -182,6 +270,11 @@ class Application {
         $this->_response->respond();
     }
 
+    /**
+     * Stwierdza, czy żądanie posiada następny krok do obsłużenia.
+     * Jeżeli posiada, aktualny jest kończony.
+     * @return boolean
+     */
     protected function isRequestForwarded() {
         $forwarded = null !== $this->_request->next();
         if ($forwarded)
