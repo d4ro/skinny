@@ -14,6 +14,12 @@ class Request {
     protected $_current;
     protected $_router;
 
+    /**
+     *
+     * @var Response\ResponseInterface
+     */
+    protected $_response;
+
     public function __construct() {
         $this->_steps = array();
         $this->_stepCount = 0;
@@ -151,6 +157,22 @@ class Request {
             $this->_router = Router::getInstance();
         $this->_router->setRequest($this);
         return $this->_router;
+    }
+
+    /**
+     * 
+     * @param Response\ResponseInterface $response
+     */
+    public function setResponse($response) {
+        $this->_response = $response;
+    }
+
+    /**
+     * 
+     * @return Response\ResponseInterface
+     */
+    public function getResponse() {
+        return $this->_response;
     }
 
 }

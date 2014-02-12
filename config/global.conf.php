@@ -11,8 +11,9 @@ return array(
     'paths' => array(
         // katalog zawartości aplikacji; domyślnie 'content'
         'content' => 'content',
-        // katalog modeli danych aplikacji; domyślnie 'models'
-        'models' => '../models',
+        // katalog modeli danych aplikacji; domyślnie '.'
+        // TODO: przemysleć...
+        'model' => '../',
         // katalog bibliotek; domyślnie 'library'
         'library' => '../library',
         // katalog cache; domyślnie 'cache'

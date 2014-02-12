@@ -1,8 +1,9 @@
 <?php return array (
-  0 => 'index',
+  0 => 'error',
+  1 => 'index',
   'test' => 
   array (
     0 => 'foo',
   ),
-  1 => 'test',
+  2 => 'test',
 );

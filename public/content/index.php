@@ -7,13 +7,13 @@ namespace content;
  *
  * @author Daro
  */
-class index extends \Skinny\Action {
+class index extends \model\action\standard {
 
-    public function permit() {
+    public function _permit() {
         
     }
 
-    public function action() {
+    public function _action() {
         
     }
 

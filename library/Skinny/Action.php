@@ -41,14 +41,14 @@ abstract class Action {
      * Aby akcja została uruchomiona, należy sprecyzować przynajmniej jeden sposób (way)
      * wykorzystania akcji przez użytkownika (przy pomocy $this->getUsage()->allowUsage()).
      */
-    abstract public function permit();
+    abstract public function _permit();
 
     /**
      * [Składnik akcji - opcjonalny]
      * Przygotowania przed uruchomieniem akcji.
      * Wczytujemy (globalne?) dane, przygotowujemy je; po tym etapie mamy wszystko, co potrzebne do obsługi akcji.
      */
-    public function prepare() {
+    public function _prepare() {
         
     }
 
@@ -57,13 +57,13 @@ abstract class Action {
      * Serce akcji. Wykonywane, gdy użytkownik ma jakiekolwiek uprawnienia do akcji.
      * Dodatkowe uprawnienia można stwierdzić przy pomocy $this->getUsage()->isAllowed().
      */
-    abstract public function action();
+    abstract public function _action();
 
     /**
      * [Składnik akcji - opcjonalny]
      * Zakończenie akcji, często czyszczenie danych, połączeń, pamięci, buforów, obsługa wyjścia (output).
      */
-    public function cleanup() {
+    public function _cleanup() {
         
     }
 

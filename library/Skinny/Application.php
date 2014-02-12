@@ -113,6 +113,7 @@ class Application {
         $this->_request->next(new Request\Step($request_url, $params));
         if (null === $this->_response)
             $this->_response = new Response\Http();
+        $this->_request->setResponse($this->_response);
 
         while (!$this->_request->isProcessed()) {
             try {
@@ -136,7 +137,7 @@ class Application {
                 if (!($action instanceof Action))
                     throw new Action\Exception('Action found is not an instance of the Skinny\Action base class.');
 
-                $action->permit();
+                $action->_permit();
 
                 if ($this->isRequestForwarded())
                     continue;
@@ -153,17 +154,17 @@ class Application {
                         throw new Action\Exception('Access denied');
                 }
 
-                $action->prepare();
+                $action->_prepare();
 
                 if ($this->isRequestForwarded())
                     continue;
 
-                $action->action();
+                $action->_action();
 
                 if ($this->isRequestForwarded())
                     continue;
 
-                $action->cleanup();
+                $action->_cleanup();
 
                 $this->_request->proceed();
             } catch (\Exception $e) {

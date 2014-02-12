@@ -9,11 +9,11 @@ namespace content;
  */
 class test extends \Skinny\Action {
 
-    public function permit() {
+    public function _permit() {
         
     }
 
-    public function action() {
+    public function _action() {
         
     }
 

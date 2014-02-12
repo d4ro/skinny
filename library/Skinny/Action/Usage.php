@@ -39,10 +39,12 @@ class Usage {
 
     protected $_allowed;
     protected $_disallowed;
+    protected $_hasChanged;
 
     public function __construct() {
         $this->_allowed = array();
         $this->_disallowed = array();
+        $this->_hasChanged = false;
     }
 
     public function setUsage($allow, $way) {
@@ -63,37 +65,58 @@ class Usage {
         if (!is_array($way))
             $way = func_get_args();
 
-        // TODO: $way jest arrayem kolejnych uprawnień, np: {drzwi, otwórz, szybko, ręką}
+        // $way jest arrayem kolejnych uprawnień, np: {drzwi, otwórz, szybko, ręką}
         // dodajemy:
         // 
         // szukamy wszystkich w disallow, w których się zawieramy (są dłuższe lub takie same i zgadzają się co do istniejących elementów)
         // if true usuwamy znalezione z disallow
+        foreach ($this->_disallowed as $key => $value) {
+            if (self::wayContainsWay($value, $way))
+                unset($this->_disallowed[$key]);
+        }
         // 
         // szukamy wszystkich w allow, które zawierają nas w sobie (są krótsze lub takie same i zgadzają się co do istniejących elementów)
         // if true nie rób nic
+        foreach ($this->_allowed as $key => $value) {
+            if (self::wayContainsWay($way, $value))
+                return;
+        }
         // 
         // dodajemy nas
+        $this->_allowed[] = $way;
+        $this->_hasChanged = true;
     }
 
-    public function allowUsages($ways) {
-        
+    public function allowUsages(array $ways) {
+        foreach ($ways as $way)
+            $this->allowUsage($way);
     }
 
     public function disallowUsage($way) {
-        // TODO
         // usuwamy:
         // 
         // szukamy wszystkich w allow, w których się zawieramy (są dłuższe lub takie same i zgadzają się co do istniejących elementów)
         // if true usuwamy znalezione z allow
+        foreach ($this->_allowed as $key => $value) {
+            if (self::wayContainsWay($value, $way))
+                unset($this->_allowed[$key]);
+        }
         //
         // szukamy wszystkich w disallow, które zawierają nas w sobie (są krótsze lub takie same i zgadzają się co do istniejących elementów)
         // if true nie rób nic
+        foreach ($this->_disallowed as $key => $value) {
+            if (self::wayContainsWay($way, $value))
+                return;
+        }
         //
         // dodajemy nas
+        $this->_disallowed[] = $way;
+        $this->_hasChanged = true;
     }
 
-    public function disallowUsages($ways) {
-        
+    public function disallowUsages(array $ways) {
+        foreach ($ways as $way)
+            $this->disallowUsage($way);
     }
 
     public function hasAny() {
@@ -104,8 +127,37 @@ class Usage {
         if (!is_array($way))
             $way = func_get_args();
 
-        // TODO
-        // wychodzimy z założenia, że nie mamy dostępu
+        if ($this->_hasChanged) {
+            sort($this->_allowed);
+            sort($this->_disallowed);
+            // TODO: optymalizacja !!!
+            $this->_hasChanged = false;
+        }
+
+        $allowed = self::subsetContainingWay($this->_allowed, $way);
+        $disallowed = self::subsetContainingWay($this->_disallowed, $way);
+
+        if (!count($allowed))
+            return false;
+
+        if (!count($disallowed))
+            return true;
+
+        return count(end($allowed)) >= count(end($disallowed));
+    }
+
+    protected static function wayContainsWay(array $way1, array $way2) {
+        $intersect = array_intersect_assoc($way2, $way1);
+        return count($intersect) == count($way2);
+    }
+
+    public static function subsetContainingWay($ways, $way) {
+        $result = [];
+        foreach ($ways as $value) {
+            if (self::wayContainsWay($value, $way))
+                $result[] = $value;
+        }
+        return $result;
     }
 
 }

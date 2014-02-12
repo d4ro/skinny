@@ -9,11 +9,11 @@ namespace content\test;
  */
 class foo extends content\test {
 
-    public function permit() {
+    public function _permit() {
         
     }
 
-    public function action() {
+    public function _action() {
         
     }
 
