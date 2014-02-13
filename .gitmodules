@@ -1,0 +1,3 @@
+[submodule "library/Skinny"]
+	path = library/Skinny
+	url = git@github.com:d4ro/skinny-lib.git
