@@ -7,10 +7,10 @@ namespace content;
  *
  * @author Daro
  */
-class test extends \Skinny\Action {
+class testa extends \Skinny\Action {
 
     public function _permit() {
-        
+        $db = $this->db;
     }
 
     public function _action() {

@@ -51,11 +51,19 @@ return array(
         // ścika bazowa www aplikacji
         'baseUrl' => '/',
     ),
-    'db' => array(
-    ),
+    'db' => [
+        'adapter' => 'Pdo_Mysql',
+        'params' => [
+            'host' => 'localhost',
+            'dbname' => 'inbook',
+            'username' => 'root',
+            'password' => 'daro',
+            'charset' => 'utf8',
+        ]
+    ],
     'view' => array(
     ),
-    // TODO: przenieść components do osobnego pliku w config/components.php
+    // TODO: przenieść components do osobnego pliku np. config/components.php lub components/*.php
     'components' => array(
         // bootstrap
         'view' => function() {
@@ -69,6 +77,13 @@ return array(
         'test' => function() {
             xdebug_var_dump($this);
             return true;
+        },
+        'db' => function() {
+            $config = $this->getConfig('db');
+            var_dump($config);
+            $db = Zend_Db::factory($config);
+            Zend_Db_Table_Abstract::setDefaultAdapter($db);
+            return $db;
         }
     ),
     // akcje obsługujące nieoczekiwane wyjątki
