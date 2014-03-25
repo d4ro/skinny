@@ -89,6 +89,6 @@ return array(
     // akcje obsługujące nieoczekiwane wyjątki
     'actions' => [
         'error' => '/error',
-        'notFound' => '/404'
+        'notFound' => '/notfound'
     ]
 );
